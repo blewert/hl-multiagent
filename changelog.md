@@ -56,7 +56,7 @@ Managed by Benjamin Williams (**<eeu222@bangor.ac.uk>**)
 * Added `update_shapes()` in `Agentset` context.
 
 
-### build 2.2 (24/06/2014)
+### build 2.2 (24/06/2014 to 26/06/2014)
 
 ###### Agentset:
 * Added `order(radius, point)` to order turtles around a point (like NetLogo's `create-ordered-turtles`).
@@ -78,9 +78,15 @@ Managed by Benjamin Williams (**<eeu222@bangor.ac.uk>**)
 ### build 2.3 (27/06/2014)
 
 ###### Patches/Agent/Environment:
+<<<<<<< HEAD
 * Added `patch_at()` and `patch_at_idx()` to `Agent` class, to determine which patch a specified set of coordinates lies on.
 * Added optional `situate` argument to `create_patches()` for `Environment`, to cancel drawing of patches.
 * Fixed bug with `Patch` class, where patches were created without a tag if situated.
 * Added `patch_here()` and `patch_here_idx()` to `Agent` class, to determine which patch this agent is currently on.
+=======
+* Added `patch_at()` and `patch_at_idx()` to `Agent` class, to determine which patch this agent is currently on.
+* Added optional `situate` argument to `create_patches()` for `Environment`, to cancel drawing of patches.
+* Fixed bug with `Patch` class, where patches were created without a tag if situated.
+>>>>>>> origin/master
 
 
