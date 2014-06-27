@@ -32,16 +32,26 @@ class Environment:
 		#On draw, just call canvas.update()
 		self.canvas.update();		
 	
-	def create_patches(self, amountX, amountY, fill=Patch.default_fill):
+	def create_patches(self, amountX, amountY, fill=Patch.default_fill, situate=True):
+		#Set self.patches to a empty list for now
 		self.patches = [];
 		
+		#Specify patch amount (w and h), for later use (patch_at())
+		self.patchamount = Vector2D(amountX, amountY);
+		
+		#Find the size of each patch for the environment
 		sizeX = (self.width  / amountX);
 		sizeY = (self.height / amountY);
 		
+		#Set environment to this environment instance if it's true, else pass null
+		environment = (self if situate else None);
+		
 		for x in range(0, amountX):
 			for y in range(0, amountY):
+				#Run through x and y, define coordinates to draw to/from
 				topLeft     = Vector2D(x * sizeX, y * sizeY);
 				bottomRight = Vector2D(topLeft.x + sizeX, topLeft.y + sizeY);
 				
-				patchToAppend = Patch(topLeft.x, topLeft.y, bottomRight.x, bottomRight.y, environment=self, fill=fill);
+				#Create a new patch with specified parameters, and append it to the list of patches
+				patchToAppend = Patch(topLeft.x, topLeft.y, bottomRight.x, bottomRight.y, environment=environment, fill=fill);
 				self.patches.append(patchToAppend);

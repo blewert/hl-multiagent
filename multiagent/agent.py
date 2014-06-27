@@ -38,6 +38,26 @@ class Agent:
 		#This agent's per-instance variables
 		self.vars = {};
 	
+	def patch_at_idx(self):
+		#Calculate the size of each patch.
+		sizeX = (self.environment.width / self.environment.patchamount.x);
+		sizeY = (self.environment.height / self.environment.patchamount.y);
+		
+		#Set x/y to 1 if 0, because 0 weirdly gives negative indices
+		safePosX = self.pos.x if self.pos.x != 0.0 else 1;
+		safePosY = self.pos.y if self.pos.y != 0.0 else 1;
+		
+		#Find out what patch x and y this agent is on, and minus one from it (zero-based indexing)
+		calcX = math.ceil(safePosX / sizeX) - 1;
+		calcY = math.ceil(safePosY / sizeY) - 1;
+		
+		#Calculate the stored index of the patch in self.environment.patches (2D -> linear), and return it.
+		patchIDX = (self.environment.patchamount.y * calcX) + calcY;
+		return patchIDX;
+		
+	def patch_at(self):
+		return self.environment.patches[self.patch_at_idx()];		
+		
 	def face(self, agent):
 		return self.facexy(agent.pos);
 		

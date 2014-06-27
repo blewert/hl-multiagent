@@ -73,3 +73,10 @@ Managed by Benjamin Williams (**<eeu222@bangor.ac.uk>**)
 ###### Added primitive patch class using tkinter rectangles:
 * Patches belong to an environment: `Environment.patches`.
 * Patches have a width, height, position and tag for shape (for tkinter's canvas).
+
+
+### build 2.3 (27/06/2014)
+###### Patches/Agent:
+* Added `patch_at()` and `patch_at_idx()` to `Agent` class, to determine which patch this agent is currently on.
+* Added optional `situate` argument to `create_turtles()` for `Agentset`, to cancel drawing of patches.
+

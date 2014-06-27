@@ -35,8 +35,10 @@ class Patch:
 		ptFrom = Vector2D(self.pos.x, self.pos.y);
 		ptTo   = Vector2D(self.pos.x + self.width, self.pos.y + self.height);
 		
-		self.environment.canvas.create_rectangle(ptFrom.x, ptFrom.y, ptTo.x, ptTo.y, fill=self.fill);
+		self.environment.canvas.create_rectangle(ptFrom.x, ptFrom.y, ptTo.x, ptTo.y, fill=self.fill, tag=self.shapeTag);
 	
 	def set_fill(self, fill):
 		self.fill = fill;
-		self.environment.canvas.itemconfigure(self.shapeTag, fill=self.fill);
+		
+		if hasattr(self, 'environment'):
+			self.environment.canvas.itemconfigure(self.shapeTag, fill=fill);
