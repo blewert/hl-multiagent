@@ -1,16 +1,15 @@
-
 Changelog
 =========
 Managed by Benjamin Williams (**<eeu222@bangor.ac.uk>**)
 
 
 
-## pre-build 1 (21/06/2014)
+### pre-build 1 (21/06/2014)
 * Started creating initial programs to delve into the extension of the native turtle module for python
 * Creation of programs to move turtles around environment, and perform basic tasks within
 * Multi-agent implementation of turtles, along with automative behaviour (wandering).
 
-## build 1 (pre 21/06/2014)
+### build 1 (pre 21/06/2014)
 
 ###### Initial creation of alternative to native python turtle module, providing very basic (and fast) turtle functionality:
 * An environment, with a fixed width and height.
@@ -33,7 +32,7 @@ Managed by Benjamin Williams (**<eeu222@bangor.ac.uk>**)
 * Now contains all methods previously defined without a class, for a single agent object.
 
 
-## build 2.1 (23/06/2014)
+### build 2.1 (23/06/2014)
 
 * Modularized classes into package hierachy, for easier inclusion with scripts
 
@@ -57,7 +56,7 @@ Managed by Benjamin Williams (**<eeu222@bangor.ac.uk>**)
 * Added `update_shapes()` in `Agentset` context.
 
 
-## build 2.2 (24/06/2014)
+### build 2.2 (24/06/2014)
 
 ###### Agentset:
 * Added `order(radius, point)` to order turtles around a point (like NetLogo's `create-ordered-turtles`).
