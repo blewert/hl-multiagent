@@ -18,11 +18,12 @@ class Agent:
 	current_agent_id = 0;
 	turtle_size      = 7;
 	
-	def __init__(self, environment=None, x=0, y=0, heading=0, coneInteriorAngle=45, coneLength=50, fill=VisionCone.default_fill):
+	def __init__(self, environment=None, x=0, y=0, heading=0, coneInteriorAngle=45, coneLength=50, fill=VisionCone.default_fill, outline=True):
 		#Set position to specified position, same with heading, and make this agent shown by default
 		self.pos     = Vector2D(x, y);
 		self.heading = heading;
 		self.hidden  = False;
+		self.outline = outline;
 		
 		#Generate an ID for this agent, and increment the static agent id by one for uniqueness
 		self.id = Agent.current_agent_id;
@@ -38,14 +39,36 @@ class Agent:
 		#This agent's per-instance variables
 		self.vars = {};
 	
-	def patch_at_idx(self):
+	def patch_ahead_idx(self, distance, angle=0.0):
+		#Calculate x and y using sin/cos, wrap around environment
+		calcX = (self.pos.x + math.cos(math.radians(self.heading + angle)) * distance) % self.environment.width;
+		calcY = (self.pos.y + math.sin(math.radians(self.heading + angle)) * distance) % self.environment.height;
+		
+		#Return the patch index located at this position
+		return self.patch_at_idx(calcX, calcY);
+		
+	def patch_ahead(self, distance, angle=0.0):
+		#Calculate x and y using sin/cos, wrap around environment
+		calcX = (self.pos.x + math.cos(math.radians(self.heading + angle)) * distance) % self.environment.width;
+		calcY = (self.pos.y + math.sin(math.radians(self.heading + angle)) * distance) % self.environment.height;
+		
+		#Return the patch located at this position
+		return self.patch_at(calcX, calcY);
+		
+	def patch_here_idx(self):
+		return self.patch_at_idx(self.pos.x, self.pos.y);
+		
+	def patch_here(self):
+		return self.patch_at(self.pos.x, self.pos.y);
+		
+	def patch_at_idx(self, x, y):
 		#Calculate the size of each patch.
 		sizeX = (self.environment.width / self.environment.patchamount.x);
 		sizeY = (self.environment.height / self.environment.patchamount.y);
 		
 		#Set x/y to 1 if 0, because 0 weirdly gives negative indices
-		safePosX = self.pos.x if self.pos.x != 0.0 else 1;
-		safePosY = self.pos.y if self.pos.y != 0.0 else 1;
+		safePosX = x if x != 0.0 else 1;
+		safePosY = y if y != 0.0 else 1;
 		
 		#Find out what patch x and y this agent is on, and minus one from it (zero-based indexing)
 		calcX = math.ceil(safePosX / sizeX) - 1;
@@ -55,8 +78,8 @@ class Agent:
 		patchIDX = (self.environment.patchamount.y * calcX) + calcY;
 		return patchIDX;
 		
-	def patch_at(self):
-		return self.environment.patches[self.patch_at_idx()];		
+	def patch_at(self, x, y):
+		return self.environment.patches[self.patch_at_idx(x, y)];		
 		
 	def face(self, agent):
 		return self.facexy(agent.pos);
@@ -124,8 +147,14 @@ class Agent:
 	def create_vision_cone(self, interiorAngle, length, fill=VisionCone.default_fill):
 		#Generate cone tag, generate vision cone (and set to local instance), and create cone shape in place
 		coneTag = ("turtle%d-cone" % self.id);
-		self.cone = VisionCone(interiorAngle, length, coneTag);
-		self.environment.canvas.create_arc(0, 0, 0, 0, fill=fill, tags=self.cone.tag);
+		self.cone = VisionCone(interiorAngle, length, coneTag, fill=fill);
+		
+		#If we want an outline, set the outline colour to black, else the same colour as the cone fill.
+		if self.outline:
+			self.environment.canvas.create_arc(0, 0, 0, 0, fill=fill, tags=self.cone.tag, outline="black");
+		else:
+			self.environment.canvas.create_arc(0, 0, 0, 0, fill=fill, tags=self.cone.tag, outline=self.cone.fill);
+			
 	
 	def situate(self, environment):
 		#Set instance environment to passed one, and generate shape tag (for agent drawing).
@@ -187,8 +216,11 @@ class Agent:
 		topLeft     = (self.pos.x - self.cone.length, self.pos.y - self.cone.length);
 		bottomRight = (self.pos.x + self.cone.length, self.pos.y + self.cone.length);
 		
+		#Set outline to the same colour if we don't want an outline (width=0 doesn't work?)
+		outline = self.cone.fill if not self.outline else "black";
+		
 		#Update starting angle of arc, using facingAngle - (interior / 2)!
-		self.environment.canvas.itemconfigure(self.cone.tag, start=(facingAngle - (self.cone.interiorAngle / 2)), extent=self.cone.interiorAngle, fill=self.cone.fill);
+		self.environment.canvas.itemconfigure(self.cone.tag, start=(facingAngle - (self.cone.interiorAngle / 2)), extent=self.cone.interiorAngle, fill=self.cone.fill, outline=outline);
 		
 		#Relocate arc to this turtle's position
 		self.environment.canvas.coords(self.cone.tag, (topLeft[0], topLeft[1], bottomRight[0], bottomRight[1]));

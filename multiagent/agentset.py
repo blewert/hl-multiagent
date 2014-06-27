@@ -10,7 +10,7 @@ from .util  import VisionCone
 from .util  import Vector2D
 
 class Agentset:
-	def __init__(self, environment, amount, heading=0, coneInteriorAngle=45, coneLength=50, fill=VisionCone.default_fill):
+	def __init__(self, environment, amount, heading=0, coneInteriorAngle=45, coneLength=50, fill=VisionCone.default_fill, outline=False):
 		self.agents = [];
 		self.environment = environment;
 		
@@ -18,7 +18,8 @@ class Agentset:
 			newAgent = Agent(environment, heading=heading,
 											coneInteriorAngle=coneInteriorAngle,
 											coneLength=coneLength,
-											fill=fill);
+											fill=fill,
+											outline=outline);
 											
 			self.agents.append(newAgent);
 	
