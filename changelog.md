@@ -56,7 +56,7 @@ Managed by Benjamin Williams (**<eeu222@bangor.ac.uk>**)
 * Added `update_shapes()` in `Agentset` context.
 
 
-### build 2.2 (24/06/2014)
+### build 2.2 (24/06/2014 to 26/06/2014)
 
 ###### Agentset:
 * Added `order(radius, point)` to order turtles around a point (like NetLogo's `create-ordered-turtles`).
