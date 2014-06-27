@@ -76,7 +76,10 @@ Managed by Benjamin Williams (**<eeu222@bangor.ac.uk>**)
 
 
 ### build 2.3 (27/06/2014)
-###### Patches/Agent:
+
+###### Patches/Agent/Environment:
 * Added `patch_at()` and `patch_at_idx()` to `Agent` class, to determine which patch this agent is currently on.
-* Added optional `situate` argument to `create_turtles()` for `Agentset`, to cancel drawing of patches.
+* Added optional `situate` argument to `create_patches()` for `Environment`, to cancel drawing of patches.
+* Fixed bug with `Patch` class, where patches were created without a tag if situated.
+
 
