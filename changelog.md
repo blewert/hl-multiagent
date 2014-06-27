@@ -82,7 +82,7 @@ Managed by Benjamin Williams (**<eeu222@bangor.ac.uk>**)
 * Added optional `situate` argument to `create_patches()` for `Environment`, to cancel drawing of patches.
 * Fixed bug with `Patch` class, where patches were created without a tag if situated.
 * Added `patch_here()` and `patch_here_idx()` to `Agent` class, to determine which patch this agent is currently on.
-* Added `patch_at()` and `patch_at_idx()` to `Agent` class, to determine which patch this agent is currently on.
-* Added optional `situate` argument to `create_patches()` for `Environment`, to cancel drawing of patches.
-* Fixed bug with `Patch` class, where patches were created without a tag if situated.
+* Added `patch_ahead()` and `patch_ahead_idx()` to `Agent` class, to determine a patch from a relative distance and offset angle of an agent.
+* Added the ability to toggle outlines of vision cones in `Agent` constructor, using `outline=False` or `outline=True` (also, in agentset constructor).
+* Added the ability to toggle grid of patches in `Patch` constructor, using `grid=True` or `grid=False` (also, in `Environment.create_patches()`).
 
