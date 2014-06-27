@@ -1,0 +1,86 @@
+/*
+ * change.log
+ * Horde Labs
+ * ----
+ * Changelog for parallel multi-agent toolkit library
+ * ----
+ * Benjamin Williams <eeu222@bangor.ac.uk>
+ * Jason Hall <?>
+ *
+*/ 
+
+[pre-build 1 ## pre 21/06/2014]:
+- Started creating initial programs to delve into the extension of the native turtle module for python
+- Creation of programs to move turtles around environment, and perform basic tasks within
+- Multi-agent implementation of turtles, along with automative behaviour (wandering).
+
+[build 1 ## pre 21/06/2014]:
+- Initial creation of alternative to native python turtle module, providing very basic (and fast) turtle functionality:
+	-- An environment, with a fixed width and height
+	-- Functionality to wrap around environment (not possible with native turtle module(?))
+	-- Fixed origin point: (0,0) relative to window.
+	-- Single turtle shape (ellipse) accompanied by turtle position, heading and speed.
+	-- Ability to move turtles throughout environment, at varying speed
+	-- Ability to toggle on/off tkinter drawing to help computation speed, as well as shape updates
+	-- Vision cone drawing, using native tkinter create_arc() at facing angle offset
+	-- Introduction of Agent, Agentset and Environment classes
+		-- Agentset: Primitive collision detection using euclidean distance
+		-- Agentset: Primitive collision detection with vision cone using barycentric coordinate method of
+		   checking whether points lie in a triangle (bug-prone, fix in successor builds)
+		-- Environment: Now handles canvas object and drawing
+		-- Agent: Now contains all methods previously defined without a class, for a single agent object.
+
+[build 2 ## 21/06/2014]:
+- Beginning of refactoring code, conceptualizing object-oriented approach to providing method interfacing
+
+[build 2.1 ## 23/06/2014]:
+- Modularized classes into package hierachy, for easier inclusion with scripts
+- Agent class:
+	-- Implemented fd/forward
+	-- Implemented bk/back (just fd with negative value)
+	-- Implemented rt and lt, aswell as random_turn (random lt/rt amount)
+	-- Implemented distancexy and distance (distance between other agents and coordinates.
+	-- Added setxy and randomxy
+	-- Added primitive per-agent variable system using dictionaries:
+		--- agent.getvar(var) returns a value from the dictionary if it exists, null otherwise
+		--- agent.varexists(var) returns true/false depending on whether the variable exists
+		--- agent.setvar(var, value) sets/adds a value into the dictionary
+Agentset class:
+	-- Added agentset.setvars(var, value) sets a value for each agent in the agentset.
+	-- Figured out issue with barycentric triangle collision algorithm - was updating position before rechecking, causing loss of precision
+	-- Updated constructor for agentset - you can now supply an amount of turtles to create along with parameters to be passed to Agent()
+	-- Added shuffle and randomize to randomly set each turtle's position in the environment via agentset
+	-- Made Agentset.agents (internal list of agents) iterable by default (e.g, for agent in Agentset(50) works fine)
+	-- Added update_shapes() in agentset context.
+
+[build 2.2 ## 24/06/2014]:
+Agentset class:
+	-- Added order(radius, point) to order turtles around a point (like netlogo's create-ordered-turtles)
+Agent class:
+	-- Added randomx and randomy, and changed randomxy to call randomx and randomy.
+	-- Added hide/ht, using itemconfigure along with state=tkinter.HIDDEN
+	-- Added show/st, using itemconfigure along with state=tkinter.NORMAL
+	-- Added hidden instance variable, to tell whether or not the turtle is hidden
+	-- Added move_to which moves the agent to the position of another agent
+	-- Added facexy, using atan2 to face a specified coordinate
+	-- Added face, using facexy to face a specified agent
+- Added primitive patch class using tkinter rectangles
+	-- Patches belong to an environment: Environment.patches
+
+	
+	Python is a brilliant language, along with some amazing utility libraries and modules. The Python turtle module however, doesn't quite fit what we need in order to simulate real-life situations.
+
+The Python turtle extension was created with only one turtle (per model) in mind, as it was aimed towards new programmers who are learning how to develop in Python. Because of this, rendering multiple turtles in a single model is painstakingly slow, and isn't natively supported. For our purposes, we need a system which is less trivial than the native turtle module - we need a system which can render and support the interactions between multiple turtles in the same model - a multi-agent system.
+
+So how would we accomplish this? Well, the answer is quite straightforward. We basically have to follow in the footsteps of the native turtle module for Python, by making our own turtle extension, but make some important changes along the way. In this post, I will only cover the basics in order to get you started!
+
+Planning
+
+The first thing we have to consider is that the native turtle module makes use of Python's portable GUI toolkit, Tkinter, in order to draw turtles to a window. Tkinter is a brilliant toolkit which allows you to create complex GUIs with layers of different "widgets" in Python. The one widget we're interested in though, is the Canvas widget, as Python's turtle module makes use of this too.
+The next thing we have to consider is that there will be multiple agents in one environment, so this means we'd have to make use of object-oriented design and design a "template" (a class) to describe each turtle uniquely in the environment. We'll discuss this later, but it's worth mentioning at this stage.
+
+And finally, it'd be good to have some class or template to describe the environment in which the turtle is situated, so we can easily draw things without getting into some huge mess.
+
+Playing around with Tkinter and the Canvas widget
+
+The first step we will actually take is to get used to some of the
