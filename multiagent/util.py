@@ -20,3 +20,6 @@ class VisionCone:
 		self.length = length;
 		self.fill = fill;
 		self.tag = tag;
+	
+	def set_fill(self, color):
+		self.fill = color;

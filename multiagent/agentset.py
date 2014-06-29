@@ -10,7 +10,7 @@ from .util  import VisionCone
 from .util  import Vector2D
 
 class Agentset:
-	def __init__(self, environment, amount, heading=0, coneInteriorAngle=45, coneLength=50, fill=VisionCone.default_fill, outline=False):
+	def __init__(self, environment, amount, heading=0, coneInteriorAngle=45, coneLength=50, fill="black", coneFill=VisionCone.default_fill, outline=False):
 		self.agents = [];
 		self.environment = environment;
 		
@@ -19,7 +19,20 @@ class Agentset:
 											coneInteriorAngle=coneInteriorAngle,
 											coneLength=coneLength,
 											fill=fill,
+											coneFill=fill,
 											outline=outline);
+											
+			self.agents.append(newAgent);
+	
+	def create_agents(self, amount, x=0, y=0, heading=0, shuffle=False, coneInteriorAngle=45, coneLength=50, fill=VisionCone.default_fill, outline=False):
+		for i in range(amount):
+			newAgent = Agent(self.environment, heading=heading,
+											coneInteriorAngle=coneInteriorAngle,
+											coneLength=coneLength,
+											fill=fill,
+											outline=outline);
+			if shuffle:
+				newAgent.randomxy();
 											
 			self.agents.append(newAgent);
 	
@@ -66,7 +79,7 @@ class Agentset:
 		for agent in self.agents:
 			agent.update_shapes();
 		
-	def get_agents_in_radius(self, agent, radius):
+	def in_radius(self, agent, radius):
 		#List for return agents
 		returnAgents = [];
 		
@@ -74,17 +87,14 @@ class Agentset:
 			#Same agent? If so, skip
 			if iagent == agent:
 				continue;
-			
-			#Euclidean distance (need to fix for wrapping environment)
-			distance = math.sqrt((iagent.pos.x - agent.pos.x)**2 + (iagent.pos.y - agent.pos.y)**2);
-
+		
 			#In radius? If so, append 
-			if distance <= radius:
+			if iagent.distance(agent) <= radius:
 				returnAgents.append(iagent);
 
 		return returnAgents;
 		
-	def get_agents_in_cone(self, agent):
+	def in_cone(self, agent):
 		relativeAngleStart = agent.heading - (agent.cone.interiorAngle/2);
 		relativeAngleEnd   = agent.heading + (agent.cone.interiorAngle/2);
 		

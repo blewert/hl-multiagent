@@ -18,7 +18,7 @@ class Agent:
 	current_agent_id = 0;
 	turtle_size      = 7;
 	
-	def __init__(self, environment=None, x=0, y=0, heading=0, coneInteriorAngle=45, coneLength=50, fill=VisionCone.default_fill, outline=True):
+	def __init__(self, environment=None, x=0, y=0, heading=0, coneInteriorAngle=45, coneLength=50, fill="black", coneFill=VisionCone.default_fill, outline=True):
 		#Set position to specified position, same with heading, and make this agent shown by default
 		self.pos     = Vector2D(x, y);
 		self.heading = heading;
@@ -36,9 +36,15 @@ class Agent:
 		#Generate vision cone data
 		self.create_vision_cone(coneInteriorAngle, coneLength);
 		
+		self.cone.set_fill(coneFill);
+		self.set_fill(fill);
+		
 		#This agent's per-instance variables
 		self.vars = {};
 	
+	def set_fill(self, fill):
+		self.environment.canvas.itemconfigure(self.shapeTag, fill=fill);		
+		
 	def patch_ahead_idx(self, distance, angle=0.0):
 		#Calculate x and y using sin/cos, wrap around environment
 		calcX = (self.pos.x + math.cos(math.radians(self.heading + angle)) * distance) % self.environment.width;
@@ -77,7 +83,7 @@ class Agent:
 		#Calculate the stored index of the patch in self.environment.patches (2D -> linear), and return it.
 		patchIDX = (self.environment.patchamount.y * calcX) + calcY;
 		return patchIDX;
-		
+	
 	def patch_at(self, x, y):
 		return self.environment.patches[self.patch_at_idx(x, y)];		
 		

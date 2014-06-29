@@ -86,3 +86,14 @@ Managed by Benjamin Williams (**<eeu222@bangor.ac.uk>**)
 * Added the ability to toggle outlines of vision cones in `Agent` constructor, using `outline=False` or `outline=True` (also, in agentset constructor).
 * Added the ability to toggle grid of patches in `Patch` constructor, using `grid=True` or `grid=False` (also, in `Environment.create_patches()`).
 
+### build 2.3 (29/06/2014)
+
+###### Agent/Agentset:
+* Fixed issue with cone fill colour not setting in constructor.
+* Added `fill` as parameter for agent fill colour, and `coneFill` as the colour for the agent's cone.
+* Added `set_fill()` to `Agent`, to colour the agent's shape a specified colour.
+* Added `create_agents()`, which appends a specific amount of agents into the agentset, with specific parameters.
+* Simplified `get_agents_in_radius()` of `Agentset` to use `distance()` of `Agent` class, rather than manually calculating euclidean distance.
+* Changed `get_agents_in_radius()` and `get_agents_in_cone()` to `in_radius()` and `in_cone()` for `Agentset`, to avoid confusion.
+###### VisionCone:
+* Added `set_fill()` to change vision cone colour.
