@@ -95,5 +95,6 @@ Managed by Benjamin Williams (**<eeu222@bangor.ac.uk>**)
 * Added `create_agents()`, which appends a specific amount of agents into the agentset, with specific parameters.
 * Simplified `get_agents_in_radius()` of `Agentset` to use `distance()` of `Agent` class, rather than manually calculating euclidean distance.
 * Changed `get_agents_in_radius()` and `get_agents_in_cone()` to `in_radius()` and `in_cone()` for `Agentset`, to avoid confusion.
+
 ###### VisionCone:
 * Added `set_fill()` to change vision cone colour.
