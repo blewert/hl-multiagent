@@ -19,17 +19,18 @@ class Agentset:
 											coneInteriorAngle=coneInteriorAngle,
 											coneLength=coneLength,
 											fill=fill,
-											coneFill=fill,
+											coneFill=coneFill,
 											outline=outline);
 											
 			self.agents.append(newAgent);
 	
-	def create_agents(self, amount, x=0, y=0, heading=0, shuffle=False, coneInteriorAngle=45, coneLength=50, fill=VisionCone.default_fill, outline=False):
+	def create_agents(self, amount, x=0, y=0, heading=0, shuffle=False, coneInteriorAngle=45, coneLength=50, fill="black", coneFill=VisionCone.default_fill, outline=False):
 		for i in range(amount):
 			newAgent = Agent(self.environment, heading=heading,
 											coneInteriorAngle=coneInteriorAngle,
 											coneLength=coneLength,
 											fill=fill,
+											coneFill=coneFill,
 											outline=outline);
 			if shuffle:
 				newAgent.randomxy();
@@ -74,11 +75,69 @@ class Agentset:
 	def shuffle(self):
 		for agent in self.agents:
 			agent.randomxy();
-		
+	
+	def kill(self, agent):
+		self.environment.canvas.delete(agent.shapeTag);
+		self.environment.canvas.delete(agent.cone.tag);
+		self.agents.remove(agent);
+	
 	def update_shapes(self):
 		for agent in self.agents:
 			agent.update_shapes();
+	
+	def first_in_cone(self, agent):
+		relativeAngleStart = agent.heading - (agent.cone.interiorAngle/2);
+		relativeAngleEnd   = agent.heading + (agent.cone.interiorAngle/2);
 		
+		#First point is turtle itself
+		p1 = Vector2D(agent.pos.x, agent.pos.y);
+		
+		#The second point of the triangle is the left end point of the cone
+		p2 = Vector2D(
+			agent.pos.x + math.cos(math.radians(relativeAngleStart)) * (agent.cone.length) + 5.0,
+			agent.pos.y + math.sin(math.radians(relativeAngleStart)) * (agent.cone.length) + 5.0,
+		);
+		
+		#The third point of the triangle is the right end point of the cone
+		p3 = Vector2D(
+			agent.pos.x + math.cos(math.radians(relativeAngleEnd)) * (agent.cone.length) + 5.0,
+			agent.pos.y + math.sin(math.radians(relativeAngleEnd)) * (agent.cone.length) + 5.0
+		);
+	
+		for iagent in self.agents:
+			if iagent == agent:
+				continue;
+		
+			p = Vector2D(iagent.pos.x, iagent.pos.y);
+			
+			#Find barycentric coordinates, solving for a, b and c
+			denom = (p1.y - p3.y) * (p1.x - p3.x) + (p3.x - p2.x) * (p1.y - p3.y);
+			a = ((p2.y - p3.y) * (p.x - p3.x) + (p3.x - p2.x) * (p.y - p3.y)) / denom;
+			b = ((p3.y - p1.y) * (p.x - p3.x) + (p1.x - p3.x) * (p.y - p3.y)) / denom;
+			c = 1.0 - a - b;
+			
+			#Check if a, b and c are normalized
+			aNormalized = (0 <= a <= 1);
+			bNormalized = (0 <= b <= 1);
+			cNormalized = (0 <= c <= 1);
+			
+			#If they're all normalized, then we've found a collision point: append agent to returnAgents
+			if aNormalized and bNormalized and cNormalized:
+				return iagent;
+		
+		return None;
+
+		
+	def first_in_radius(self, agent, radius):
+		for iagent in self.agents:
+			if iagent == agent:
+				continue;
+			
+			if iagent.distance(agent) <= radius:
+				return iagent;
+		
+		return None;
+	
 	def in_radius(self, agent, radius):
 		#List for return agents
 		returnAgents = [];

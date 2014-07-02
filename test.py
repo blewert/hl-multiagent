@@ -16,10 +16,7 @@ environment = Environment(800, 800);
 environment.create_patches(24, 24, grid=False, fill="black");
 
 #Add some agents to this environment
-agents = Agentset(environment, 15, outline=False, fill="#555555");
-
-for agent in agents:
-	agent.set_fill("white");
+agents = Agentset(environment, 25, outline=False, fill="white", coneFill="#555555");
 
 def col2int(colour):
 	return int(colour[1:], 16);
@@ -50,11 +47,19 @@ while True:
 		
 	#Run through each agent, apply some form of behaviour
 	for agent in agents:
+		if agent.cone.fill != "#555555":
+			agent.cone.set_fill("#555555");
+			
 		agent.fd(10);
 		agent.random_turn(5);
 		
 		patch_here = agent.patch_here();
 		patch_here.set_fill("#252525");
+		
+		closeAgent = agents.first_in_cone(agent);
+		
+		if closeAgent != None:
+			agent.cone.set_fill("#ff0000");
 			
 	#Update everyones shapes for redraw
 	agents.update_shapes();

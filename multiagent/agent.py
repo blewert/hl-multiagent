@@ -13,6 +13,7 @@ from .     import environment
 from .util import VisionCone
 from .util import Vector2D
 
+
 class Agent:
 	#Static variable for agent id, starting at 0, and turtle size in px
 	current_agent_id = 0;
@@ -153,7 +154,7 @@ class Agent:
 	def create_vision_cone(self, interiorAngle, length, fill=VisionCone.default_fill):
 		#Generate cone tag, generate vision cone (and set to local instance), and create cone shape in place
 		coneTag = ("turtle%d-cone" % self.id);
-		self.cone = VisionCone(interiorAngle, length, coneTag, fill=fill);
+		self.cone = VisionCone(interiorAngle, length, self, coneTag, fill=fill);
 		
 		#If we want an outline, set the outline colour to black, else the same colour as the cone fill.
 		if self.outline:
@@ -226,7 +227,7 @@ class Agent:
 		outline = self.cone.fill if not self.outline else "black";
 		
 		#Update starting angle of arc, using facingAngle - (interior / 2)!
-		self.environment.canvas.itemconfigure(self.cone.tag, start=(facingAngle - (self.cone.interiorAngle / 2)), extent=self.cone.interiorAngle, fill=self.cone.fill, outline=outline);
+		self.environment.canvas.itemconfigure(self.cone.tag, start=(facingAngle - (self.cone.interiorAngle / 2)), extent=self.cone.interiorAngle, outline=outline);
 		
 		#Relocate arc to this turtle's position
 		self.environment.canvas.coords(self.cone.tag, (topLeft[0], topLeft[1], bottomRight[0], bottomRight[1]));

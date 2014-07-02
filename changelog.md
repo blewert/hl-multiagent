@@ -97,4 +97,18 @@ Managed by Benjamin Williams (**<eeu222@bangor.ac.uk>**)
 * Changed `get_agents_in_radius()` and `get_agents_in_cone()` to `in_radius()` and `in_cone()` for `Agentset`, to avoid confusion.
 
 ###### VisionCone:
-* Added `set_fill()` to change vision cone colour.
+* Added `set_fill()` to change vision cone colour
+
+### build 2.3 (30/06/2014 to 02/07/2014)
+
+###### VisionCone/Agent:
+* Fixed `coneFill` argument in constructors of both the `Agent` and `Agentset` classes.
+* Simplified `update_cone()` function by:
+	* Only setting fill colour of the cone when it's needed.
+	* Not reconfiguring fill colour every update of cone shape.
+	* Adding an extra parameter (and instance variable) to `VisionCone`, to allow the colour to be set via `VisionCone.set_fill()`.
+
+###### Agentset:
+* Added `kill()` which removes a specified agent object and it's shapes from the environment and the agentset.
+* Added `first_in_cone()` which finds the first agent in another agent's cone, and then breaks (speeds up computation).
+* Added `first_in_radius()` which finds the first agent in another agent's radius, and then breaks (speeds up computation).
