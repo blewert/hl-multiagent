@@ -112,3 +112,8 @@ Managed by Benjamin Williams (**<eeu222@bangor.ac.uk>**)
 * Added `kill()` which removes a specified agent object and it's shapes from the environment and the agentset.
 * Added `first_in_cone()` which finds the first agent in another agent's cone, and then breaks (speeds up computation).
 * Added `first_in_radius()` which finds the first agent in another agent's radius, and then breaks (speeds up computation).
+
+
+### build 2.4 (15/07/2014)
+
+* Updated file structure, and added a `no-draw` alternative, which doesn't use Tkinter to draw - ready for MPI.
