@@ -1,12 +1,14 @@
 #!/bin/bash --login
-#BSUB -x
-#BSUB -n 4 #4 cores
-#BSUB -o output.out
-#BSUB -e output_error.err
-#BSUB -J agent_sim
-#BSUB -W 00:05 #give it 5 minutes to complete
+#BSUB -x                    # Give explicit access
+#BSUB -n 4                  # Use 4 cores
+#BSUB -o output.out         # Output to this file
+#BSUB -e output_error.err   # Output errors to this file
+#BSUB -J agent_sim          # Job name
+#BSUB -W 00:05              # Give it 5 minutes to complete
 
+#Clear all modules, and load mpi4py
 module purge
 module load mpi4py
 
+#Run test.py using 4 processes
 mpirun -n 4 python test.py
