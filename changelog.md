@@ -117,3 +117,5 @@ Managed by Benjamin Williams (**<eeu222@bangor.ac.uk>**)
 ### build 2.4 (15/07/2014)
 
 * Updated file structure, and added a `no-draw` alternative, which doesn't use Tkinter to draw - ready for MPI.
+* Added basic MPI functionality to run one simulation on multiple cores.
+* Added sample job script for HPC Wales clusters.
