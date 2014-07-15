@@ -4,6 +4,7 @@
 ## Test script for multi-agent system.
 ##
 
+from mpi4py import MPI
 import random
 import time
 import sys
@@ -20,15 +21,25 @@ agents = Agentset(environment, 1);
 
 agents.shuffle();
 
+size = MPI.COMM_WORLD.Get_size();
+rank = MPI.COMM_WORLD.Get_rank();
+
 iter = 0;
+iiter = 0;
+
 while True:	
 	for agent in agents:
+		agent.random_turn(15);
 		agent.fd(1);
 		
 		iter += 1;
 		
 		if iter >= 1000:
-			print("Agent %d: p = (%f, %f)" % (agent.id, agent.pos.x, agent.pos.y));
+			print("[rank: %d, iter: %d] Agent %d: p = (%f, %f), r = (%f)" % (rank, iiter*iter, agent.id, agent.pos.x, agent.pos.y, agent.heading));
 			iter = 0;
+			iiter += 1;
+
+		if iiter >= 20:
+			exit(0);
 		
 
