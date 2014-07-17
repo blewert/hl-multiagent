@@ -4,7 +4,11 @@
 ## Agent/turtle class (will expand to encompass agents more generally soon)
 ##
 
-import tkinter
+try:
+	import tkinter
+except ImportError:
+	import Tkinter as tkinter
+	
 import math
 import random
 
@@ -86,7 +90,7 @@ class Agent:
 		return patchIDX;
 	
 	def patch_at(self, x, y):
-		return self.environment.patches[self.patch_at_idx(x, y)];		
+		return self.environment.patches[int(self.patch_at_idx(x, y)) % len(self.environment.patches)];		
 		
 	def face(self, agent):
 		return self.facexy(agent.pos);
