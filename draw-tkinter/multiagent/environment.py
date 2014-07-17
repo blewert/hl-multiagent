@@ -4,7 +4,10 @@
 ## Environment class
 ##
 
-import tkinter
+try:
+	import tkinter
+except ImportError:
+	import Tkinter as tkinter
 
 from .util import Vector2D
 from .patch import Patch
