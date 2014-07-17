@@ -10,7 +10,7 @@ DEBUG_SHOW_PATH = DEBUG_LOG << 1;
 DEBUG_NONE      = DEBUG_LOG << 2;
 
 #Debug bitflag variable
-DEBUG_PACKAGE_BITS = (DEBUG_LOG | DEBUG_SHOW_PATH);
+DEBUG_PACKAGE_BITS = (DEBUG_NONE);
 
 def debug_package_inclusion(package, __class):
 	if not (DEBUG_NONE & DEBUG_PACKAGE_BITS):

@@ -7,7 +7,12 @@
 import random
 import time
 import sys
+
+from mpi4py import MPI
 from multiagent import *
+
+rank = MPI.COMM_WORLD.Get_rank();
+size = MPI.COMM_WORLD.Get_size();
 
 #Create an environment
 environment = Environment(800, 800);
@@ -41,11 +46,11 @@ while True:
 			if agent.distancexy(pointToStop) <= radiusToStop:
 				agent.setvar("stopped", True);
 				stoppedCount += 1;
-				#print("[%2d/%2d] Stopped agent %2d at p = (%.3f, %.3f)" % (stoppedCount, agentAmount, agent.id, agent.pos.x, agent.pos.y));
+				#print("[CPU %2d/%2d]: ([%2d/%2d) Stopped agent %2d at p = (%.3f, %.3f)" % (rank, size, stoppedCount, agentAmount, agent.id, agent.pos.x, agent.pos.y));
 				
 			
 	if stoppedCount >= agentAmount:
 		break;
 
-print("Took %f CPU seconds to complete (%d agents to stop in radius %.1f of p = (%.2f, %.2f))" % (time.clock(), agentAmount, radiusToStop, pointToStop.x, pointToStop.y));
+print("[CPU %2d/%2d]: Took %f CPU seconds to complete (%d agents to stop in radius %.1f of p = (%.2f, %.2f))" % (rank, size, time.clock(), agentAmount, radiusToStop, pointToStop.x, pointToStop.y));
 
