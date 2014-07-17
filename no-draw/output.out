@@ -488,3 +488,232 @@ PS:
 
 Read file <output_error.err> for stderr output of this job.
 
+Sender: LSF System <hpcadmin@ab-mpc-040>
+Subject: Job 525439: <agent_sim> Done
+
+Job <agent_sim> was submitted from host <ab-log-001> by user <ben.williams1> in cluster <ab-log-003_cluster1>.
+Job was executed on host(s) <8*ab-mpc-040>, in queue <q_ab_mpc_work>, as user <ben.williams1> in cluster <ab-log-003_cluster1>.
+</home/ben.williams1> was used as the home directory.
+</home/ben.williams1/multiagent/no-draw> was used as the working directory.
+Started at Thu Jul 17 13:04:48 2014
+Results reported at Thu Jul 17 13:04:52 2014
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+#!/bin/bash --login
+#BSUB -x                    # Give explicit access
+#BSUB -n 8                  # Use 8 cores
+#BSUB -o output.out         # Output to this file
+#BSUB -e output_error.err   # Output errors to this file
+#BSUB -J agent_sim          # Job name
+#BSUB -W 00:05              # Give it 5 minutes to complete
+
+#Clear all modules, and load mpi4py
+module purge
+module load mpi4py
+
+#Run test.py using 8 processes
+mpirun -n 1 python rangegame.py
+
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time   :      3.44 sec.
+    Max Memory :         2 MB
+    Max Swap   :        24 MB
+
+    Max Processes  :         1
+    Max Threads    :         1
+
+The output (if any) follows:
+
+[CPU  0/ 1]: Took 3.170000 CPU seconds to complete (1024 agents to stop in radius 75.0 of p = (400.00, 400.00))
+
+
+PS:
+
+Read file <output_error.err> for stderr output of this job.
+
+Sender: LSF System <hpcadmin@ab-mpc-040>
+Subject: Job 525440: <agent_sim> Done
+
+Job <agent_sim> was submitted from host <ab-log-001> by user <ben.williams1> in cluster <ab-log-003_cluster1>.
+Job was executed on host(s) <8*ab-mpc-040>, in queue <q_ab_mpc_work>, as user <ben.williams1> in cluster <ab-log-003_cluster1>.
+</home/ben.williams1> was used as the home directory.
+</home/ben.williams1/multiagent/no-draw> was used as the working directory.
+Started at Thu Jul 17 13:29:09 2014
+Results reported at Thu Jul 17 13:29:14 2014
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+#!/bin/bash --login
+#BSUB -x                    # Give explicit access
+#BSUB -n 8                  # Use 8 cores
+#BSUB -o output.out         # Output to this file
+#BSUB -e output_error.err   # Output errors to this file
+#BSUB -J agent_sim          # Job name
+#BSUB -W 00:05              # Give it 5 minutes to complete
+
+#Clear all modules, and load mpi4py
+module purge
+module load mpi4py
+
+#Run test.py using 8 processes
+mpirun python rangegame.py
+
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time   :     44.58 sec.
+    Max Memory :         2 MB
+    Max Swap   :        24 MB
+
+    Max Processes  :         1
+    Max Threads    :         1
+
+The output (if any) follows:
+
+[CPU  7/12]: Took 3.090000 CPU seconds to complete (1024 agents to stop in radius 75.0 of p = (400.00, 400.00))
+[CPU  8/12]: Took 3.170000 CPU seconds to complete (1024 agents to stop in radius 75.0 of p = (400.00, 400.00))
+[CPU  4/12]: Took 3.060000 CPU seconds to complete (1024 agents to stop in radius 75.0 of p = (400.00, 400.00))
+[CPU  1/12]: Took 3.380000 CPU seconds to complete (1024 agents to stop in radius 75.0 of p = (400.00, 400.00))
+[CPU 10/12]: Took 3.270000 CPU seconds to complete (1024 agents to stop in radius 75.0 of p = (400.00, 400.00))
+[CPU  3/12]: Took 3.120000 CPU seconds to complete (1024 agents to stop in radius 75.0 of p = (400.00, 400.00))
+[CPU  0/12]: Took 3.490000 CPU seconds to complete (1024 agents to stop in radius 75.0 of p = (400.00, 400.00))
+[CPU  6/12]: Took 3.170000 CPU seconds to complete (1024 agents to stop in radius 75.0 of p = (400.00, 400.00))
+[CPU  5/12]: Took 3.280000 CPU seconds to complete (1024 agents to stop in radius 75.0 of p = (400.00, 400.00))
+[CPU  9/12]: Took 3.160000 CPU seconds to complete (1024 agents to stop in radius 75.0 of p = (400.00, 400.00))
+[CPU  2/12]: Took 3.270000 CPU seconds to complete (1024 agents to stop in radius 75.0 of p = (400.00, 400.00))
+[CPU 11/12]: Took 3.730000 CPU seconds to complete (1024 agents to stop in radius 75.0 of p = (400.00, 400.00))
+
+
+PS:
+
+Read file <output_error.err> for stderr output of this job.
+
+Sender: LSF System <hpcadmin@ab-mpc-040>
+Subject: Job 525441: <agent_sim> Done
+
+Job <agent_sim> was submitted from host <ab-log-001> by user <ben.williams1> in cluster <ab-log-003_cluster1>.
+Job was executed on host(s) <8*ab-mpc-040>, in queue <q_ab_mpc_work>, as user <ben.williams1> in cluster <ab-log-003_cluster1>.
+</home/ben.williams1> was used as the home directory.
+</home/ben.williams1/multiagent/no-draw> was used as the working directory.
+Started at Thu Jul 17 13:33:36 2014
+Results reported at Thu Jul 17 13:33:40 2014
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+#!/bin/bash --login
+#BSUB -x                    # Give explicit access
+#BSUB -n 8                  # Use 8 cores
+#BSUB -o output.out         # Output to this file
+#BSUB -e output_error.err   # Output errors to this file
+#BSUB -J agent_sim          # Job name
+#BSUB -W 00:05              # Give it 5 minutes to complete
+
+#Clear all modules, and load mpi4py
+module purge
+module load mpi4py
+
+#Run test.py using 8 processes
+mpirun -n $LSB_DJOB_NUMPROC python rangegame.py
+
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time   :     28.80 sec.
+    Max Memory :         2 MB
+    Max Swap   :        24 MB
+
+    Max Processes  :         1
+    Max Threads    :         1
+
+The output (if any) follows:
+
+[CPU  1/ 8]: Took 3.190000 CPU seconds to complete (1024 agents to stop in radius 75.0 of p = (400.00, 400.00))
+[CPU  5/ 8]: Took 3.190000 CPU seconds to complete (1024 agents to stop in radius 75.0 of p = (400.00, 400.00))
+[CPU  3/ 8]: Took 3.160000 CPU seconds to complete (1024 agents to stop in radius 75.0 of p = (400.00, 400.00))
+[CPU  0/ 8]: Took 3.240000 CPU seconds to complete (1024 agents to stop in radius 75.0 of p = (400.00, 400.00))
+[CPU  7/ 8]: Took 3.310000 CPU seconds to complete (1024 agents to stop in radius 75.0 of p = (400.00, 400.00))
+[CPU  2/ 8]: Took 3.290000 CPU seconds to complete (1024 agents to stop in radius 75.0 of p = (400.00, 400.00))
+[CPU  4/ 8]: Took 3.460000 CPU seconds to complete (1024 agents to stop in radius 75.0 of p = (400.00, 400.00))
+[CPU  6/ 8]: Took 3.620000 CPU seconds to complete (1024 agents to stop in radius 75.0 of p = (400.00, 400.00))
+
+
+PS:
+
+Read file <output_error.err> for stderr output of this job.
+
+Sender: LSF System <hpcadmin@ab-mpc-043>
+Subject: Job 525442: <agent_sim> Done
+
+Job <agent_sim> was submitted from host <ab-log-001> by user <ben.williams1> in cluster <ab-log-003_cluster1>.
+Job was executed on host(s) <8*ab-mpc-043>, in queue <q_ab_mpc_work>, as user <ben.williams1> in cluster <ab-log-003_cluster1>.
+</home/ben.williams1> was used as the home directory.
+</home/ben.williams1/multiagent/no-draw> was used as the working directory.
+Started at Thu Jul 17 13:34:41 2014
+Results reported at Thu Jul 17 13:34:46 2014
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+#!/bin/bash --login
+#BSUB -x                    # Give explicit access
+#BSUB -n 8                  # Use 8 cores
+#BSUB -o output.out         # Output to this file
+#BSUB -e output_error.err   # Output errors to this file
+#BSUB -J agent_sim          # Job name
+#BSUB -W 00:05              # Give it 5 minutes to complete
+
+#Clear all modules, and load mpi4py
+module purge
+module load mpi4py
+
+#Run test.py using 8 processes
+mpirun -n $LSB_DJOB_NUMPROC python rangegame.py
+
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time   :     28.00 sec.
+    Max Memory :         2 MB
+    Max Swap   :        24 MB
+
+    Max Processes  :         1
+    Max Threads    :         1
+
+The output (if any) follows:
+
+[CPU  3/ 8]: Took 2.990000 CPU seconds to complete (1024 agents to stop in radius 75.0 of p = (400.00, 400.00))
+[CPU  2/ 8]: Took 3.140000 CPU seconds to complete (1024 agents to stop in radius 75.0 of p = (400.00, 400.00))
+[CPU  1/ 8]: Took 3.230000 CPU seconds to complete (1024 agents to stop in radius 75.0 of p = (400.00, 400.00))
+[CPU  5/ 8]: Took 3.180000 CPU seconds to complete (1024 agents to stop in radius 75.0 of p = (400.00, 400.00))
+[CPU  6/ 8]: Took 3.100000 CPU seconds to complete (1024 agents to stop in radius 75.0 of p = (400.00, 400.00))
+[CPU  4/ 8]: Took 3.230000 CPU seconds to complete (1024 agents to stop in radius 75.0 of p = (400.00, 400.00))
+[CPU  8/ 8]: Took 3.440000 CPU seconds to complete (1024 agents to stop in radius 75.0 of p = (400.00, 400.00))
+[CPU  7/ 8]: Took 3.430000 CPU seconds to complete (1024 agents to stop in radius 75.0 of p = (400.00, 400.00))
+
+
+PS:
+
+Read file <output_error.err> for stderr output of this job.
+

@@ -1,6 +1,6 @@
 #!/bin/bash --login
 #BSUB -x                    # Give explicit access
-#BSUB -n 8                  # Use 8 cores
+#BSUB -n 8                  # Use x amount of  cores
 #BSUB -o output.out         # Output to this file
 #BSUB -e output_error.err   # Output errors to this file
 #BSUB -J agent_sim          # Job name
@@ -10,5 +10,5 @@
 module purge
 module load mpi4py
 
-#Run test.py using 8 processes
-mpirun -n 8 python rangegame.py
+#Run test.py using x amount of processors
+mpirun -n $LSB_DJOB_NUMPROC python rangegame.py

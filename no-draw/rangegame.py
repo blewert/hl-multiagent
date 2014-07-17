@@ -52,5 +52,5 @@ while True:
 	if stoppedCount >= agentAmount:
 		break;
 
-print("[CPU %2d/%2d]: Took %f CPU seconds to complete (%d agents to stop in radius %.1f of p = (%.2f, %.2f))" % (rank, size, time.clock(), agentAmount, radiusToStop, pointToStop.x, pointToStop.y));
+print("[CPU %2d/%2d]: Took %f CPU seconds to complete (%d agents to stop in radius %.1f of p = (%.2f, %.2f))" % (rank + 1, size, time.clock(), agentAmount, radiusToStop, pointToStop.x, pointToStop.y));
 
