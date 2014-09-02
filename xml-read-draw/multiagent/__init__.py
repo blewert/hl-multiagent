@@ -33,6 +33,8 @@ from multiagent.environment import Environment
 
 debug_package_inclusion("agentset", "Agentset");
 from multiagent.agentset import Agentset
+
+debug_package_inclusion("agentset", "AgentsetFromProperties");
 from multiagent.agentset import AgentsetFromProperties
 
 debug_package_inclusion("agent", "Agent");
