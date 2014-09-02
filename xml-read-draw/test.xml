@@ -2,11 +2,13 @@
 
 <Environment>
 	<Agentset>
+		<Behaviour type="wander" />
 		<Properties>
 			<Property tag="amount" >5 </Property>
 			<Property tag="heading">15</Property>
 			<Property tag="fill">#ff0000</Property>
 			<Property tag="coneFill">#00ff00</Property>
+			<Property tag="shuffle">true</Property>
 		</Properties>
 	</Agentset>
 	<Agentset>
@@ -15,6 +17,15 @@
 			<Property tag="heading">45</Property>
 			<Property tag="fill">#ff0000</Property>
 			<Property tag="coneFill">#ff0000</Property>
+		</Properties>
+	</Agentset>
+	<Agentset>
+		<Behaviour type="wander"/>
+		<Properties>
+			<Property tag="amount" >20 </Property>
+			<Property tag="heading">45</Property>
+			<Property tag="fill">#ff00ff</Property>
+			<Property tag="coneFill">#0000ff</Property>
 		</Properties>
 	</Agentset>
 </Environment>

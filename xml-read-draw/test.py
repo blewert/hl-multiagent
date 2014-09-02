@@ -25,20 +25,23 @@ parsedAgentsets = parsedFile.parse();
 agentsets = [];
 
 for agentset in parsedAgentsets:	
-	
 	#Run through each agentset that was parsed, and create an agentset object from the properties of this agentset (and append!)
-	newAgentset = AgentsetFromProperties(environment, agentset["properties"]);
+	newAgentset = AgentsetFromProperties(environment, agentset["properties"], agentset["behaviour"] if "behaviour" in agentset.keys() else None);
 	agentsets.append(newAgentset);
 
 
-agentsets[0].shuffle();
-agentsets[1].shuffle();
+for agentset in agentsets:
+	if agentset.shuffle:
+		agentset.shuffle();
 
 while True:	
 
 	for agentset in agentsets:
 		for agent in agentset:
-			agent.fd(1);
+			if agentset.get_behaviour_type() == "wander":
+				agent.random_turn(15);
+				
+			agent.fd(2);
 		
 		agentset.update_shapes();
 	
