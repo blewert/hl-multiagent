@@ -9,8 +9,10 @@ from .agent import Agent
 from .util  import VisionCone
 from .util  import Vector2D
 
+		
 class Agentset:
-	def __init__(self, environment, amount, heading=0, coneInteriorAngle=45, coneLength=50, fill="black", coneFill=VisionCone.default_fill, outline=False):
+
+	def __init__(self, environment, amount=0, heading=0, coneInteriorAngle=45, coneLength=50, fill="black", coneFill=VisionCone.default_fill, outline=False):
 		self.agents = [];
 		self.environment = environment;
 		
@@ -196,3 +198,24 @@ class Agentset:
 				returnAgents.append(iagent);
 			
 		return returnAgents;
+		
+class AgentsetFromProperties(Agentset):
+	
+	def __init__(self, environment, props):
+			
+		#Set local fields to the ones in the dictionary passed, using a ternary operator to give default values if the keys don't exist
+		self.amount     = props["amount"    ] if "amount"     in props.keys() else 0;
+		self.heading    = props["heading"   ] if "heading"    in props.keys() else 0;
+		self.coneAngle  = props["coneAngle" ] if "coneAngle"  in props.keys() else 45;
+		self.coneLength = props["coneLength"] if "coneLength" in props.keys() else 50;
+		self.fill       = props["fill"      ] if "fill"       in props.keys() else "black";
+		self.coneFill   = props["coneFill"  ] if "coneFill"   in props.keys() else "#cccccc";
+		self.outline    = props["outline"   ] if "outline"    in props.keys() else False;
+		
+		#(self, environment, amount=0, heading=0, coneInteriorAngle=45, coneLength=50, fill="black", coneFill=VisionCone.default_fill, outline=False):
+		
+		#Convert outline to a boolean
+		self.outline = True if self.outline == "True" or self.outline == "true" else False;
+		
+		#And call superclass constructor
+		Agentset.__init__(self, environment, int(self.amount), float(self.heading), float(self.coneAngle), float(self.coneLength), self.fill, self.coneFill, self.outline);

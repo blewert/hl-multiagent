@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<Environment>
+	<Agentset>
+		<Properties>
+			<Property tag="amount" >5 </Property>
+			<Property tag="heading">15</Property>
+			<Property tag="fill">#ff0000</Property>
+			<Property tag="coneFill">#00ff00</Property>
+		</Properties>
+	</Agentset>
+	<Agentset>
+		<Properties>
+			<Property tag="amount" >5 </Property>
+			<Property tag="heading">45</Property>
+			<Property tag="fill">#ff0000</Property>
+			<Property tag="coneFill">#ff0000</Property>
+		</Properties>
+	</Agentset>
+</Environment>
+ 

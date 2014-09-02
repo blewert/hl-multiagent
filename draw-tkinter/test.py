@@ -4,10 +4,19 @@
 ## Test script for multi-agent system.
 ##
 
+import math
 import random
 import time
 import sys
 from multiagent import *
+
+BEHAVIOUR_WANDER = 0;
+BEHAVIOUR_AVOID  = 1;
+BEHAVIOUR_SPIRAL = 2;
+
+behaviour = 1;#random.randrange(0, 3);
+
+print("Selected behaviour: %d" % (behaviour));
 
 #Create an environment
 environment = Environment(800, 800);
@@ -36,7 +45,8 @@ def decrease(colour):
     
 	return int2col(color);
 
-agents.order(10, Vector2D(300,300));
+#agents.order(10, Vector2D(300,300));
+agents.shuffle();
 
 while True:	
 
@@ -49,17 +59,27 @@ while True:
 	for agent in agents:
 		if agent.cone.fill != "#555555":
 			agent.cone.set_fill("#555555");
-			
-		agent.fd(10);
-		agent.random_turn(5);
 		
 		patch_here = agent.patch_here();
 		patch_here.set_fill("#252525");
 		
-		closeAgent = agents.first_in_cone(agent);
-		
-		if closeAgent != None:
-			agent.cone.set_fill("#ff0000");
+		if behaviour == BEHAVIOUR_WANDER:
+			agent.fd(10);
+			agent.random_turn(5);
+			
+		elif behaviour == BEHAVIOUR_AVOID:
+			agent.fd(10);
+			agent.random_turn(5);
+			
+			closeAgent = agents.first_in_radius(agent, 150.0);
+			
+			if closeAgent != None:
+				agent.bk(3);
+				closeAgent.bk(3);
+				
+		elif behaviour == BEHAVIOUR_SPIRAL:
+			agent.fd(5);
+			agent.rt(math.sin(agent.pos.x * 0.01) * 5);
 			
 	#Update everyones shapes for redraw
 	agents.update_shapes();
