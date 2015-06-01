@@ -7,6 +7,7 @@
 import random
 import time
 import sys
+import json
 from multiagent import *
 
 #Create an environment
@@ -41,7 +42,7 @@ while True:
 			if agent.distancexy(pointToStop) <= radiusToStop:
 				agent.setvar("stopped", True);
 				stoppedCount += 1;
-				#print("[%2d/%2d] Stopped agent %2d at p = (%.3f, %.3f)" % (stoppedCount, agentAmount, agent.id, agent.pos.x, agent.pos.y));
+				print("[%2d/%2d] Stopped agent %2d at p = (%.3f, %.3f)" % (stoppedCount, agentAmount, agent.id, agent.pos.x, agent.pos.y));
 				
 			
 	if stoppedCount >= agentAmount:
@@ -50,3 +51,58 @@ while True:
 print("Took %f CPU seconds to complete (%d agents to stop in radius %.1f of p = (%.2f, %.2f))" % (time.clock(), agentAmount, radiusToStop, pointToStop.x, pointToStop.y));
 
 
+agentData = [];
+
+environmentData = {
+	"width"  : environment.width,
+	"height" : environment.height,
+	"originX" : environment.origin.x,
+	"originY" : environment.origin.y,
+	"wrap" : environment.wrap
+};
+
+patchData = [];
+
+print("Taking JSON snapshot for patches...");
+for patch in environment.patches:
+	patchData.append(
+	{
+		"posX" : round(patch.pos.x, 5),
+		"posY" : round(patch.pos.y, 5),
+		"width" : round(patch.width, 5),
+		"height" : round(patch.height, 5),
+		"fill" : patch.fill,
+		"gridOn" : patch.grid
+	});
+	
+print("Snapshot completed.\r\n");
+
+print("Taking JSON snapshot for agents");
+for agent in agents:
+	agentData.append(
+	{
+		"hidden" : agent.hidden,
+		"heading" : round(agent.heading, 5),
+		"posX" : round(agent.pos.x, 5),
+		"posY" : round(agent.pos.y, 5),
+		"outlined" : agent.outline,
+		"fill" : agent.fill,
+		"coneLength" : agent.cone.length,
+		"coneFill" : agent.cone.fill,
+		"coneAngle" : agent.cone.interiorAngle
+	});
+	
+print("Snapshot completed.");
+#print(json.JSONEncoder().encode(agentData));
+
+outputData = {
+	"environment" : environmentData,
+	"patches" : patchData,
+	"agents" : agentData
+};
+
+fp = open('output.json', 'w+');
+fp.write(json.JSONEncoder().encode(outputData));
+fp.close();
+
+print("Wrote to output.json.");
