@@ -11,10 +11,29 @@ void setup()
     json = loadJSONObject("../output.json");
     
     JSONObject environment = json.getJSONObject("environment");
-    
+      
     size(environment.getInt("width"), environment.getInt("height"));
     
+    JSONArray patches = json.getJSONArray("patches");
     JSONArray agents = json.getJSONArray("agents"); 
+    
+    fill(178);
+    stroke(110);
+    
+    for(int i = 0; i < patches.size(); i++)
+    {        
+        JSONObject element = patches.getJSONObject(i);
+        
+        String fill = element.getString("fill");
+        println(fill);
+        
+        float posX = element.getFloat("posX");
+        float posY = element.getFloat("posY");
+        float pwidth  = element.getFloat("width") - posX;
+        float pheight = element.getFloat("height") - posY;
+        
+        rect(posX, posY, pwidth, pheight);
+    }
     
     for(int i = 0; i < agents.size(); i++)
     {
@@ -40,18 +59,16 @@ void setup()
         pushMatrix();
         translate(posX, posY);
         rotate(radians(heading));
-        scale(0.9);
+        scale(1.3);
         
         stroke(255, 255, 255);
         line(5, 0, 5, 50);
         
         stroke(255, 255, 255, 0);
+        fill(0xffff0000);
         triangle(0, 0, 5, 13, 10, 0);
-        
        
         popMatrix(); 
-        
-        println(posX + ", " + posY);
     }
     
     //println(agents);
