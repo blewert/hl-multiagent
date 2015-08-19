@@ -43,9 +43,15 @@ builtins.agents = e.agents;
 builtins.hpzones = e.hpzones;
 builtins.obstacles = e.obstacles;
 
+def play_attack(num, agent):
+	acts = agent.getvar("attacks");
+
+	acts[num](agent);
+	
 def play_action(num, agent):
 	#0,      1        2           3     4      5       6       7
-	#attack, sattack, sattacksig, flee, sflee, flee2b, moveto, wander
+	#0,      1        2        3      4
+	#flee, sflee, flee2b, moveto, wander
 	
 	#shuffle here
 	acts = agent.getvar("actions");
@@ -53,16 +59,22 @@ def play_action(num, agent):
 	acts[num](agent);
 
 actions = [ 
-	e.attack, e.signal_and_attack, e.attack_signalled_agent,
+	#e.attack, e.signal_and_attack, e.attack_signalled_agent,
 	e.flee, e.signal_and_flee, e.flee_to_base,
 	e.move_to_last_position, 
 	e.wander 
 ];
 
+attack_actions = [
+	e.attack, e.signal_and_attack, e.attack_signalled_agent
+];
 
 for agent in e.agents:
-	#nactions = sorted(actions, key=lambda k: random.random())
-	agent.setvar("actions", actions);
+	nactions = sorted(actions, key=lambda k: random.random())
+	agent.setvar("actions", nactions);
+	
+	nactions = sorted(attack_actions, key=lambda k: random.random())
+	agent.setvar("attacks", nactions);
 
 while True:	
 	
@@ -122,10 +134,10 @@ while True:
 					print("[agent %d] move to last position" % (agent.id));
 					
 					if e.health_is_low(agent):
-						play_action(5, agent);
+						play_action(2, agent);
 						#e.flee_to_base(agent);
 					else:
-						play_action(6, agent);
+						play_action(3, agent);
 						#e.move_to_last_position(agent);
 	
 				else:
@@ -133,11 +145,11 @@ while True:
 					
 					if e.health_is_low(agent):
 						print("[agent %d] flee to base" % (agent.id));
-						play_action(5, agent);
+						play_action(2, agent);
 						#e.flee_to_base(agent);
 					else:
 						#print("wander");
-						play_action(7, agent);
+						play_action(4, agent);
 						#e.wander(agent);
 					
 				agent.setvar("underfire", False);
@@ -158,28 +170,28 @@ while True:
 					#There are teammates near to this agent. So:
 					
 					if e.health_is_low(agent):
-						play_action(4, agent);
+						play_action(1, agent);
 						#e.signal_and_flee(agent);
 						pass;
 					else:
-						play_action(1, agent);
+						play_attack(1, agent);
 						#e.signal_and_attack(agent);
 						pass;
 						
 				else:
 					#There are no teammates nearby.
 					if e.health_is_low(agent):
-						play_action(3, agent);
+						play_action(0, agent);
 						#e.flee(agent);
 						pass;
 					else:
 						if e.enemy_teammates_nearby(agent):
 							print("[agent %d] flee" % (agent.id));
-							play_action(3, agent);
+							play_action(0, agent);
 							#e.flee(agent);
 							pass;
 						else:
-							play_action(0, agent);
+							play_attack(0, agent);
 							#e.attack(agent);
 							pass;
 		else:
@@ -191,17 +203,17 @@ while True:
 				#Opponents not seen
 				if e.has_been_signalled(agent):
 					if e.health_is_low(agent):
-						play_action(3, agent);
+						play_action(0, agent);
 						#e.flee(agent);
 					else:
-						play_action(2, agent);
+						play_attack(2, agent);
 						#e.attack_signalled_agent(agent);
 				else:
 					if e.health_is_low(agent):
-						play_action(5, agent);
+						play_action(2, agent);
 						#e.flee_to_base(agent);
 					else:
-						play_action(7, agent);
+						play_action(4, agent);
 						#e.wander(agent);
 			else:
 				#Opponents seen
@@ -212,23 +224,23 @@ while True:
 				if e.teammates_nearby(agent):
 					#Teammates nearby
 					if e.health_is_low(agent):
-						play_action(4, agent);
+						play_action(1, agent);
 						#e.signal_and_flee(agent);
 					else:
-						play_action(1, agent);
+						play_attack(1, agent);
 						#e.signal_and_attack(agent);
 				else:
 					if e.health_is_low(agent):
-						play_action(3, agent);
+						play_action(0, agent);
 						#e.flee(agent);
 					else:
 						if e.enemy_teammates_nearby(agent):
 							#print("teammates are not nearby, health is not low, flee");	
-							play_action(3, agent);
+							play_action(0, agent);
 							#e.flee(agent);
 						else:
 							#print("teammates are not nearby, health is not low, attack");	
-							play_action(0, agent);
+							play_attack(0, agent);
 							#e.attack(agent);
 					
 					
