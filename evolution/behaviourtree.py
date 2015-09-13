@@ -13,6 +13,37 @@ import builtins
 from multiagent import *
 import evolution as e;
 
+
+import sys;
+
+args = {};
+
+def extract_cmd_args():
+	if len(sys.argv) > 1:
+
+		i = 0;
+		
+		for arg in sys.argv:
+			if arg.startswith("--"):
+				
+				if i+1 > len(sys.argv) - 1:
+					print("[invalid arg] I expected a value for key '%s'." % arg);
+					exit(1);
+				
+				elif not sys.argv[i+1].startswith("--"):
+					args[arg[2:]] = sys.argv[i+1];
+				
+			i += 1;
+	else:
+		print("[error] I expected > 1 arguments.");
+		exit(1);
+
+extract_cmd_args();
+
+print(args);
+
+AMOUNT_OF_AGENTS = int(args["team-size"]) * 2;
+
 #Create an environment
 e.environment = Environment(600, 600);
 
@@ -35,7 +66,7 @@ e.hpzones.append(Obstacle(e.environment.width - 50 - hpZoneWidth, e.environment.
 [ x.situate(e.environment) for x in e.hpzones ];
 
 #Add some agents to this environment
-e.agents = Agentset(e.environment, 8,  coneLength=70, outline=False, fill="white", coneFill="#555555");
+e.agents = Agentset(e.environment, AMOUNT_OF_AGENTS, coneLength=70, outline=False, fill="white", coneFill="#555555");
 e.agents_init(e.agents);
 
 builtins.environment = e.environment;
