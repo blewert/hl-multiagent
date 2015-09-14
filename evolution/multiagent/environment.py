@@ -31,6 +31,9 @@ class Environment:
 		#And pack (to start drawing)
 		self.canvas.pack();			
 		
+	def destroy(self):
+		self.tk.destroy();
+		
 	def draw(self):
 		#On draw, just call canvas.update()
 		self.canvas.update();		
