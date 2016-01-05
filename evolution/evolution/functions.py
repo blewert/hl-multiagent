@@ -58,6 +58,8 @@ def hit_agent(other):
 	other.setvar("health", other.getvar("health") - HIT_DAMAGE);
 	other.setvar("underfire", True);
 
+	other.setvar("damage_taken", other.getvar("damage_taken") + HIT_DAMAGE);	
+
 def signal(agent, other):
 	teammates = [ x for x in b.agents if x != agent and x.getvar("team") == agent.getvar("team") and agent.distance(x) < NEARBY_DIST ];
 	
@@ -93,6 +95,8 @@ def attack_signalled_agent(agent):
 	if agent.distance(other) > 5:
 		agent.fd(AGENT_SPEED);
 	
+	agent.setvar("damage_given", other.getvar("damage_given") + HIT_DAMAGE);
+	
 	#print("[agent %d] attack agent %d (%3.1f hp)" % (agent.id, other.id, other.getvar("health")));
 	hit_agent(other);
 	
@@ -109,6 +113,8 @@ def attack(agent):
 	
 	if agent.distance(other) > 5:
 		agent.fd(AGENT_SPEED);
+	
+	agent.setvar("damage_given", agent.getvar("damage_given") + HIT_DAMAGE);	
 	
 	#print("[agent %d] attack agent %d (%3.1f hp)" % (agent.id, other.id, other.getvar("health")));
 	hit_agent(other);
@@ -139,6 +145,9 @@ def agents_init(agents):
 		agent.setvar("health", 100.0);
 		agent.setvar("underfire", False);
 		agent.setvar("signalled_agent", None);
+		
+		agent.setvar("damage_given", 0.0);
+		agent.setvar("damage_taken", 0.0);
 		
 		if i % 2 == 0:
 			agent.cone.set_fill("#ff0000");

@@ -44,9 +44,10 @@ NUMBER_OF_GENERATIONS = int(args["gens"]);
 MAX_TICKS             = int(args["max-ticks"]);
 
 population = { }; #index = agent id, data = actions
+fitness    = { };
 
 actions = [ 
-	#e.attack, e.signal_and_attack, e.attack_signalled_agent,
+	e.attack, e.signal_and_attack, e.attack_signalled_agent,
 	e.flee, e.signal_and_flee, e.flee_to_base,
 	e.move_to_last_position, 
 	e.wander 
@@ -71,9 +72,10 @@ def runSimulation(numberOfGenerations):
 			print("\t[selection] Running simulation for agents %s." % ([i, i+1]));
 			executeIndividualSimulation([i, i+1]);
 			
+		print("\n\tEvolving this generation...");
+		evolution();
+		
 		print("}\n");
-			
-		#evolution();
 		
 def init():
 
@@ -347,6 +349,89 @@ def executeIndividualSimulation(passedAgents):
 
 	#Call behaviour tree for each agent continously
 	behaviourTree();
+	
+	#Evaluate the fitnesses for these two agents.
+	evaluateFitnesses(e.agents, passedAgents);
+
+def evaluateFitnesses(agents, passedIDs):
+	i = 0;
+	
+	for agent in agents:
+		
+		fitness[passedIDs[i]] = (agent.getvar("damage_given") + 1) / (agent.getvar("damage_taken") + 1) - 1;
+		
+		i += 1;
+
+def breed(parentA, parentB, split = -1):
+    # Given 2 inputs (parents), we need 4 (2 ^ 2) children with traits:
+    # AB, AA, BA, BB
+    # but to promote diversity only use where AB or BA
+    
+    # Parents must be the same size or no split can occur
+    assert len(parentA) == len(parentB);
+    
+    # Is the split-point (the pivot) out of range?
+    assert split > 0 and split < len(parentA);
+    
+    # Return first half of A with second half of B, and first half of B with 
+    # second half of B
+    return [
+        parentA[:split] + parentB[split:],
+        parentB[:split] + parentA[split:]
+    ];		
+	
+def evolution():
+
+	offspring = [];
+	
+	fitnessSum     = 0;
+	probabilitySum = 0;
+	
+	for i in range(0, len(fitness)):
+		print("\t[fitness] Agent %d: %f" % (i, fitness[i]));
+	
+	for agent in range(0, len(population)):
+		fitnessSum += fitness[agent];
+		
+	print("\tFitness sum for this generation is %f" % fitnessSum);
+	
+	if fitnessSum == 0:
+		fitnessSum = 1;
+		
+	probability = [0 for i in range(0, len(population))];
+	
+	for agent in range(0, len(population)):
+		probability[agent] = probabilitySum + (fitness[agent] / fitnessSum);
+		probabilitySum += probability[agent];
+		
+	while len(offspring) <= AMOUNT_OF_AGENTS:
+		for j in range(0, 2):
+			selected = {};
+			randNumber = random.random();
+			
+			for i in range(0, len(population)):
+				if randNumber > probability[i] and randNumber < probability[i+1]:
+					#then you have been selected (?)
+					selected[j] = population[i];
+		
+		print(len(selected));
+					
+			
+			
+
+	# loop until new population is full
+		# do this twice
+			# number = Random between 0 and 1
+			# for all members of population
+				# if number > probability but less than next probability 
+					# then you have been selected
+			# end for
+		# end
+		# (child1, child2) = create offspring
+		# .append(offspring);
+	# end loop
+	
+	# population = offspring;
 	
 def play_attack(num, agent):
 	#acts = agent.getvar("attacks");
