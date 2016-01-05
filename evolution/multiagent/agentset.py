@@ -24,6 +24,9 @@ class Agentset:
 											
 			self.agents.append(newAgent);
 	
+	def get(self, index):
+		return self.agents[index];
+		
 	def create_agents(self, amount, x=0, y=0, heading=0, shuffle=False, coneInteriorAngle=45, coneLength=50, fill="black", coneFill=VisionCone.default_fill, outline=False):
 		for i in range(amount):
 			newAgent = Agent(self.environment, heading=heading,

@@ -13,7 +13,6 @@ import builtins
 from multiagent import *
 import evolution as e;
 
-
 import sys;
 
 args = {};
@@ -40,92 +39,117 @@ def extract_cmd_args():
 
 extract_cmd_args();
 
-print(args);
+AMOUNT_OF_AGENTS      = int(args["amount"]);
+NUMBER_OF_GENERATIONS = int(args["gens"]);
+MAX_TICKS             = int(args["max-ticks"]);
 
-AMOUNT_OF_AGENTS = int(args["team-size"]) * 2;
+population = { }; #index = agent id, data = actions
 
+actions = [ 
+	#e.attack, e.signal_and_attack, e.attack_signalled_agent,
+	e.flee, e.signal_and_flee, e.flee_to_base,
+	e.move_to_last_position, 
+	e.wander 
+];
 
-def play_attack(num, agent):
-	acts = agent.getvar("attacks");
+attack_actions = [
+	e.attack, e.signal_and_attack, e.attack_signalled_agent
+];
 
-	acts[num](agent);
+def runSimulation(numberOfGenerations):
+
 	
-def play_action(num, agent):
-	#0,      1        2           3     4      5       6       7
-	#0,      1        2        3      4
-	#flee, sflee, flee2b, moveto, wander
+	# Run through each number of specified generations.
+	for i in range(0, numberOfGenerations):
 	
-	#shuffle here
-	acts = agent.getvar("actions");
-	
-	acts[num](agent);
+		print("Running generation [%d/%d]" % (i+1, numberOfGenerations));
+		print("{");
 		
-for i in range(1, 3):
-	#Create an environment
-	e.environment = Environment(600, 600);
+		# Then, run through every pair of agents in the population. Execute
+		# a simulation involving just these two agents.
+		for i in range(0, len(population), 2):
+			print("\t[selection] Running simulation for agents %s." % ([i, i+1]));
+			executeIndividualSimulation([i, i+1]);
+			
+		print("}\n");
+			
+		#evolution();
+		
+def init():
 
+	#Initialise the list of actions for each agent
+	#..
+	
+	#Run through each agent in the population
+	for agent in range(0, AMOUNT_OF_AGENTS):
+	
+		#Set their actions to be random initially
+		randActions = [actions[random.randrange(0, len(actions))] for i in range(0, len(actions))];
+		population[agent] = randActions;
+			
+			
+	print("Running simulation with %d agents for %d generations..." % (AMOUNT_OF_AGENTS, NUMBER_OF_GENERATIONS));
+	
+	#And run the simulation
+	runSimulation(NUMBER_OF_GENERATIONS);
+	
+def setupEnvironment(passedAgents):
+	#Set up an environment to simulate the agents
+	e.environment = Environment(600, 600);
+	
+	#Some other environmental details such as walls
 	wallWidth = 20;
 	hpZoneHeight = 100;
 	hpZoneWidth = 100;
 
+	#A list of obstacles within the environment. Append two walls in the middle of the environment.
 	e.obstacles = [];
-
 	e.obstacles.append(Obstacle(e.environment.width / 2 - (wallWidth/2), 0, wallWidth, 250));
 	e.obstacles.append(Obstacle(e.environment.width / 2 - (wallWidth/2), e.environment.height - 150, wallWidth, 250));
 
+	#A list of "bases" for each team of agents
 	e.hpzones = [];
-
 	e.hpzones.append(Obstacle(50, e.environment.height / 2 - hpZoneHeight / 2, hpZoneWidth, hpZoneHeight));
 	e.hpzones.append(Obstacle(e.environment.width - 50 - hpZoneWidth, e.environment.height / 2 - hpZoneHeight / 2, hpZoneWidth, hpZoneHeight));
 
+	#Situate and set up all of the things we just set up.
 	[ x.situate(e.environment) for x in e.obstacles ];
 	[ x.set_fill("#009900") for x in e.hpzones ];
 	[ x.situate(e.environment) for x in e.hpzones ];
-
-	#Add some agents to this environment
-	e.agents = Agentset(e.environment, AMOUNT_OF_AGENTS, coneLength=120, outline=False, fill="white", coneFill="#555555");
-	e.agents_init(e.agents);
-
+	
+	#Global variables for environment, agents, hpzones and obstacles (so everyone can access it).
 	builtins.environment = e.environment;
-	builtins.agents = e.agents;
+	#builtins.agents = e.agents;
 	builtins.hpzones = e.hpzones;
 	builtins.obstacles = e.obstacles;
-
-	actions = [ 
-		#e.attack, e.signal_and_attack, e.attack_signalled_agent,
-		e.flee, e.signal_and_flee, e.flee_to_base,
-		e.move_to_last_position, 
-		e.wander 
-	];
-
-	attack_actions = [
-		e.attack, e.signal_and_attack, e.attack_signalled_agent
-	];
-
-	for agent in e.agents:
-		#nactions = sorted(actions, key=lambda k: random.random())
-		agent.setvar("actions", actions);
 		
-		nactions = attack_actions;#sorted(attack_actions, key=lambda k: random.random())
-		agent.setvar("attacks", nactions);
-
+def behaviourTree():
+	
+	ticks = 0;
+	
 	while True:	
 		
+		ticks += 1;
+		
+		if ticks >= MAX_TICKS:
+			print("\tTicks have exceeded limit (%d).. aborting." % MAX_TICKS);
+			break;
+			
 		next_generation_flag = False;
 		
 		for agent in e.agents:
-		
+
 			#Global behaviour, death:
 			if agent.getvar("health") <= 0:
 				teamCount = len([ x for x in e.agents if x.getvar("team") == agent.getvar("team")]) - 1;
 				
-				print("*** agent %d was killed." % (agent.id));
+				#print("*** agent %d was killed." % (agent.id));
 				
 				if teamCount == 0:
 					teamId = agent.getvar("team");
 					teamColour = ["red", "blue"][teamId];
 					
-					print("*** Team ID %d (%s) with agent %d lost." % (teamId, teamColour, agent.id));
+					#print("*** Team ID %d (%s) with agent %d lost." % (teamId, teamColour, agent.id));
 					
 					#exit(0);
 					next_generation_flag = True;
@@ -145,7 +169,7 @@ for i in range(1, 3):
 					agent.setvar("health", 100);
 				else:
 					agent.setvar("health", newHealth);
-					print("[agent %d] refilled hp (%.1f)" % (agent.id, agent.getvar("health")));
+					#print("[agent %d] refilled hp (%.1f)" % (agent.id, agent.getvar("health")));
 			
 			#Global behaviour, avoidance:
 			if agent.raycast_obstacles(e.obstacles, 100):
@@ -168,7 +192,7 @@ for i in range(1, 3):
 					
 					if e.seen_in_last_frame(agent) != None:
 						#An agent was seen in the last frame. Move to that position:					
-						print("[agent %d] move to last position" % (agent.id));
+						#print("[agent %d] move to last position" % (agent.id));
 						
 						if e.health_is_low(agent):
 							play_action(2, agent);
@@ -181,7 +205,7 @@ for i in range(1, 3):
 						e.lastFrameData[hash(agent)] = {};
 						
 						if e.health_is_low(agent):
-							print("[agent %d] flee to base" % (agent.id));
+							#print("[agent %d] flee to base" % (agent.id));
 							play_action(2, agent);
 							#e.flee_to_base(agent);
 						else:
@@ -223,7 +247,7 @@ for i in range(1, 3):
 							pass;
 						else:
 							if e.enemy_teammates_nearby(agent):
-								print("[agent %d] flee" % (agent.id));
+								#print("[agent %d] flee" % (agent.id));
 								play_action(0, agent);
 								#e.flee(agent);
 								pass;
@@ -292,8 +316,53 @@ for i in range(1, 3):
 		#And redraw!
 		e.environment.draw();
 
-		if next_generation_flag:
-			e.environment.destroy();
-			break;
+	#Destroy environment after simulation
+	e.environment.destroy();
+			
+def executeIndividualSimulation(passedAgents):
 
+	#passedAgents just contains the ids for agents in the agents array.
+	#..
+	
+	#Call to setup environment + agents
+	setupEnvironment(passedAgents);
+	
+	#Add some agents to this environment. We need to set up the amount of passed agents.
+	e.agents = Agentset(e.environment, len(passedAgents), coneLength=120, outline=False, fill="white", coneFill="#555555");
+	
+	#Then, call agents_init() - set up team, health, cone and situate randomly in the environment.
+	e.agents_init(e.agents);
+	builtins.agents = e.agents;
+	
+	#Set up actions for every agent with the actions spawned for the population
+	for agentID in passedAgents:
+		e.agents.get(agentID % 2).setvar("actions", population[agentID]);
+
+	# for agent in e.agents:
+		# #nactions = sorted(actions, key=lambda k: random.random())
+		# agent.setvar("actions", actions);
+		
+		# nactions = attack_actions;#sorted(attack_actions, key=lambda k: random.random())
+		# agent.setvar("attacks", nactions);
+
+	#Call behaviour tree for each agent continously
+	behaviourTree();
+	
+def play_attack(num, agent):
+	#acts = agent.getvar("attacks");
+	#acts[num](agent);
+	play_action(num, agent);
+	
+def play_action(num, agent):
+	#0,      1        2           3     4      5       6       7
+	#0,      1        2        3      4
+	#flee, sflee, flee2b, moveto, wander
+	
+	#shuffle here
+	acts = agent.getvar("actions");
+	
+	acts[num](agent);
+
+#Call init()
+init();
 

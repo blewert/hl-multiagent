@@ -93,7 +93,7 @@ def attack_signalled_agent(agent):
 	if agent.distance(other) > 5:
 		agent.fd(AGENT_SPEED);
 	
-	print("[agent %d] attack agent %d (%3.1f hp)" % (agent.id, other.id, other.getvar("health")));
+	#print("[agent %d] attack agent %d (%3.1f hp)" % (agent.id, other.id, other.getvar("health")));
 	hit_agent(other);
 	
 ## Attacks another agent
@@ -110,7 +110,7 @@ def attack(agent):
 	if agent.distance(other) > 5:
 		agent.fd(AGENT_SPEED);
 	
-	print("[agent %d] attack agent %d (%3.1f hp)" % (agent.id, other.id, other.getvar("health")));
+	#print("[agent %d] attack agent %d (%3.1f hp)" % (agent.id, other.id, other.getvar("health")));
 	hit_agent(other);
 	
 
