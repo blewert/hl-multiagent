@@ -42,9 +42,11 @@ extract_cmd_args();
 AMOUNT_OF_AGENTS      = int(args["amount"]);
 NUMBER_OF_GENERATIONS = int(args["gens"]);
 MAX_TICKS             = int(args["max-ticks"]);
+SPLIT_POS             = int(args["split"]);
+MUTATION_CHANCE       = float(args["mutation"]);
 
-population = { }; #index = agent id, data = actions
-fitness    = { };
+population = [ ]; #index = agent id, data = actions
+fitness    = [ ];
 
 actions = [ 
 	e.attack, e.signal_and_attack, e.attack_signalled_agent,
@@ -59,7 +61,6 @@ attack_actions = [
 
 def runSimulation(numberOfGenerations):
 
-	
 	# Run through each number of specified generations.
 	for i in range(0, numberOfGenerations):
 	
@@ -87,7 +88,8 @@ def init():
 	
 		#Set their actions to be random initially
 		randActions = [actions[random.randrange(0, len(actions))] for i in range(0, len(actions))];
-		population[agent] = randActions;
+		population.append(randActions)
+		fitness.append(0);
 			
 			
 	print("Running simulation with %d agents for %d generations..." % (AMOUNT_OF_AGENTS, NUMBER_OF_GENERATIONS));
@@ -354,13 +356,22 @@ def executeIndividualSimulation(passedAgents):
 	evaluateFitnesses(e.agents, passedAgents);
 
 def evaluateFitnesses(agents, passedIDs):
-	i = 0;
+
+	global fitness
 	
+	i = 0;
+		
 	for agent in agents:
 		
 		fitness[passedIDs[i]] = (agent.getvar("damage_given") + 1) / (agent.getvar("damage_taken") + 1) - 1;
 		
 		i += 1;
+		
+	#Normalize fitnesses (for negative values)
+	minValue = min(fitness);
+	
+	if minValue < 0:
+		fitness = [x + -minValue for x in fitness];
 
 def breed(parentA, parentB, split = -1):
     # Given 2 inputs (parents), we need 4 (2 ^ 2) children with traits:
@@ -378,10 +389,58 @@ def breed(parentA, parentB, split = -1):
     return [
         parentA[:split] + parentB[split:],
         parentB[:split] + parentA[split:]
-    ];		
+    ];	
+    
+def roulette_select(population, fitnesses, num):
+
+    #Sum the individual fitnesses
+	total_fitness = float(sum(fitnesses));
+    
+	if total_fitness == 0:
+		total_fitness = len(fitnesses);
+		
+    #Calculate relative fitness for each fitness
+	rel_fitness = [f / total_fitness for f in fitnesses];
+	
+    #Generate probability intervals for each individual
+	probs = [sum(rel_fitness[:i+1]) for i in range(len(rel_fitness))];
+    
+    #Draw new population
+	new_population = [];
+    
+	for n in range(num):
+        
+        #Generate a random number
+		r = random.random();
+        
+		for (i, individual) in enumerate(population):
+            
+            #Run through each member in the population. If the random
+            #number is less than the probability interval at this point, add this member to the population
+			if r <= probs[i]:
+				new_population.append(individual)
+				break
+           
+	#New children (for crossover)
+	new_children = [];
+    
+	for i in range(0, len(new_population), 2):
+	
+		#Run through every pair of members of the population. Breed these two and produce children.
+		children = breed(new_population[0], new_population[1], SPLIT_POS);
+		
+		#Append these children to the list of new children
+		new_children.append(children[0]);
+		new_children.append(children[1]);
+    
+	#And return the children
+	return new_children
 	
 def evolution():
 
+	global population
+	global fitness
+	
 	offspring = [];
 	
 	fitnessSum     = 0;
@@ -390,48 +449,27 @@ def evolution():
 	for i in range(0, len(fitness)):
 		print("\t[fitness] Agent %d: %f" % (i, fitness[i]));
 	
-	for agent in range(0, len(population)):
-		fitnessSum += fitness[agent];
-		
-	print("\tFitness sum for this generation is %f" % fitnessSum);
-	
-	if fitnessSum == 0:
-		fitnessSum = 1;
-		
-	probability = [0 for i in range(0, len(population))];
-	
-	for agent in range(0, len(population)):
-		probability[agent] = probabilitySum + (fitness[agent] / fitnessSum);
-		probabilitySum += probability[agent];
-		
-	while len(offspring) <= AMOUNT_OF_AGENTS:
-		for j in range(0, 2):
-			selected = {};
-			randNumber = random.random();
-			
-			for i in range(0, len(population)):
-				if randNumber > probability[i] and randNumber < probability[i+1]:
-					#then you have been selected (?)
-					selected[j] = population[i];
-		
-		print(len(selected));
-					
-			
-			
+	population = roulette_select(population, fitness, len(population));
 
-	# loop until new population is full
-		# do this twice
-			# number = Random between 0 and 1
-			# for all members of population
-				# if number > probability but less than next probability 
-					# then you have been selected
-			# end for
-		# end
-		# (child1, child2) = create offspring
-		# .append(offspring);
-	# end loop
+	#Run through each member in the population
+	for (j, agent) in enumerate(population):
 	
-	# population = offspring;
+		#Run through every action for this member
+		for (i, action) in enumerate(agent):
+		
+			#If this gene gets randomly selected for mutation, then:
+			if random.random() <= MUTATION_CHANCE:
+			
+				#Just select a random action and set this gene to this random action
+				choice = random.choice(actions);
+				print("\tGene #%d of agent #%d mutated: %s to %s" % (i, j, agent[i].__name__, choice.__name__));
+				population[j][i] = random.choice(actions);
+				
+	#Print out the new population
+	print("\n\tNew population");
+	for (i, agent) in enumerate(population):
+		print("\t[agent #%d] %s" % (i, [actions.index(x) for x in agent]));
+				
 	
 def play_attack(num, agent):
 	#acts = agent.getvar("attacks");
