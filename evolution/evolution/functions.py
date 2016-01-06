@@ -97,6 +97,13 @@ def attack_signalled_agent(agent):
 	
 	agent.setvar("damage_given", other.getvar("damage_given") + HIT_DAMAGE);
 	
+	for a in b.agents:
+		if a.getvar("team") == agent.getvar("team"):
+			a.setvar("other_team_damage", a.getvar("other_team_damage") + HIT_DAMAGE);
+			
+		else:
+			a.setvar("team_damage", a.getvar("team_damage") + HIT_DAMAGE);
+			
 	#print("[agent %d] attack agent %d (%3.1f hp)" % (agent.id, other.id, other.getvar("health")));
 	hit_agent(other);
 	
@@ -115,6 +122,13 @@ def attack(agent):
 		agent.fd(AGENT_SPEED);
 	
 	agent.setvar("damage_given", agent.getvar("damage_given") + HIT_DAMAGE);	
+	
+	for a in b.agents:
+		if a.getvar("team") == agent.getvar("team"):
+			a.setvar("other_team_damage", a.getvar("other_team_damage") + HIT_DAMAGE);
+			
+		else:
+			a.setvar("team_damage", a.getvar("team_damage") + HIT_DAMAGE);
 	
 	#print("[agent %d] attack agent %d (%3.1f hp)" % (agent.id, other.id, other.getvar("health")));
 	hit_agent(other);
@@ -148,6 +162,9 @@ def agents_init(agents):
 		
 		agent.setvar("damage_given", 0.0);
 		agent.setvar("damage_taken", 0.0);
+		
+		agent.setvar("team_damage", 0.0);
+		agent.setvar("other_team_damage", 0.0);
 		
 		if i % 2 == 0:
 			agent.cone.set_fill("#ff0000");
@@ -235,8 +252,7 @@ def opponent_seen(agent):
 ##
 def under_fire(agent):
 	return agent.getvar("underfire") != False;
-
-
+	
 
 ## Allows the agent to wander.
 ##

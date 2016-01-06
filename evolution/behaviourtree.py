@@ -44,6 +44,7 @@ NUMBER_OF_GENERATIONS = int(args["gens"]);
 MAX_TICKS             = int(args["max-ticks"]);
 SPLIT_POS             = int(args["split"]);
 MUTATION_CHANCE       = float(args["mutation"]);
+TEAM_SIZE             = int(args["team-size"]);
 
 population = [ ]; #index = agent id, data = actions
 fitness    = [ ];
@@ -69,9 +70,10 @@ def runSimulation(numberOfGenerations):
 		
 		# Then, run through every pair of agents in the population. Execute
 		# a simulation involving just these two agents.
-		for i in range(0, len(population), 2):
-			print("\t[selection] Running simulation for agents %s." % ([i, i+1]));
-			executeIndividualSimulation([i, i+1]);
+		for i in range(0, len(population), TEAM_SIZE):
+			agents = list(range(i, i + TEAM_SIZE));
+			print("\t[selection] Running simulation for agents %s." % agents);
+			executeIndividualSimulation(agents);
 			
 		print("\n\tEvolving this generation...");
 		evolution();
@@ -339,8 +341,8 @@ def executeIndividualSimulation(passedAgents):
 	builtins.agents = e.agents;
 	
 	#Set up actions for every agent with the actions spawned for the population
-	for agentID in passedAgents:
-		e.agents.get(agentID % 2).setvar("actions", population[agentID]);
+	for (i, agentID) in enumerate(passedAgents):
+		e.agents.get(i).setvar("actions", population[agentID]);
 
 	# for agent in e.agents:
 		# #nactions = sorted(actions, key=lambda k: random.random())
@@ -363,7 +365,15 @@ def evaluateFitnesses(agents, passedIDs):
 		
 	for agent in agents:
 		
-		fitness[passedIDs[i]] = (agent.getvar("damage_given") + 1) / (agent.getvar("damage_taken") + 1) - 1;
+		#fitness[passedIDs[i]] = (agent.getvar("damage_given") + 1) / (agent.getvar("damage_taken") + 1) - 1;
+		#fitness[passedIDs[i]] = agent.getvar("other_team_damage");
+		#(given_damage / own_damage) + (other_team_damage / team_damage)
+		damage_given = agent.getvar("damage_given") + 1;
+		damage_taken = agent.getvar("damage_taken") + 1;
+		team_damage  = agent.getvar("team_damage") + 1;
+		other_team_damage = agent.getvar("other_team_damage") + 1;
+		
+		fitness[passedIDs[i]] = (damage_given / damage_taken) + (other_team_damage / team_damage);
 		
 		i += 1;
 		
