@@ -7,6 +7,7 @@ import math
 import random
 import time
 import sys
+import os
 import builtins
 
 #Import utility functions for evolution and multiagent library
@@ -37,6 +38,23 @@ def extract_cmd_args():
 		print("[error] I expected > 1 arguments.");
 		exit(1);
 
+
+
+if "--help" in sys.argv:
+	print("[required flags]");
+	print("{");
+	
+	print("\t--amount [uint]\t\tThe population size");
+	print("\t--gens [uint]\t\tThe amount of generations to run for");
+	print("\t--max-ticks [uint]\tThe max number of epochs to run for each simulation");
+	print("\t--split [uint]\t\tThe two-fold split in each chromosome during crossover");
+	print("\t--mutation [uint]\tThe mutation chance (0 .. 1)");
+	print("\t--team-size [uint]\tThe team size");
+	
+	print("}");
+	
+	exit(1);
+
 extract_cmd_args();
 
 AMOUNT_OF_AGENTS      = int(args["amount"]);
@@ -60,6 +78,8 @@ attack_actions = [
 	e.attack, e.signal_and_attack, e.attack_signalled_agent
 ];
 
+resultFolder = "";
+
 def runSimulation(numberOfGenerations):
 
 	# Run through each number of specified generations.
@@ -70,20 +90,43 @@ def runSimulation(numberOfGenerations):
 		
 		# Then, run through every pair of agents in the population. Execute
 		# a simulation involving just these two agents.
-		for i in range(0, len(population), TEAM_SIZE):
-			agents = list(range(i, i + TEAM_SIZE));
+		for j in range(0, len(population), TEAM_SIZE):
+			agents = list(range(j, j + TEAM_SIZE));
 			print("\t[selection] Running simulation for agents %s." % agents);
 			executeIndividualSimulation(agents);
 			
 		print("\n\tEvolving this generation...");
-		evolution();
+		evolution(i+1);
 		
 		print("}\n");
+
+def makeDirectories():
+	global resultFolder
+
+	if not os.path.exists("results"):
+		os.makedirs("results");
+
+	dirs = [ x[0] for x in os.walk("results") ];
+	dirs  = [ x.replace("results\\", "") for x in dirs ];
+	idirs = [ int(x) for x in dirs if x.isdigit() ];
+	idirs.sort();
+
+	print(dirs);
+	print(len(idirs));
+	
+	if len(idirs) > 0:
+		resultFolder = ("results/%d/" % (idirs[-1] + 1));
+	else:
+		resultFolder = "results/1/";
 		
+	os.makedirs(resultFolder);
+	
 def init():
 
 	#Initialise the list of actions for each agent
 	#..
+	
+	makeDirectories();
 	
 	#Run through each agent in the population
 	for agent in range(0, AMOUNT_OF_AGENTS):
@@ -93,12 +136,19 @@ def init():
 		population.append(randActions)
 		fitness.append(0);
 			
+	with open("%sgenerations.txt" % resultFolder, "a+") as f:
+		f.write("[generation 0]\n");		
+		for (i, agent) in enumerate(population):
+			f.write("agent_%d = %s\n" % (i, str([actions.index(x) for x in agent]).replace("[", "").replace("]", "") ));
 			
+		f.write("\n");
+		
 	print("Running simulation with %d agents for %d generations..." % (AMOUNT_OF_AGENTS, NUMBER_OF_GENERATIONS));
 	
 	#And run the simulation
 	runSimulation(NUMBER_OF_GENERATIONS);
 	
+
 def setupEnvironment(passedAgents):
 	#Set up an environment to simulate the agents
 	e.environment = Environment(600, 600);
@@ -373,7 +423,7 @@ def evaluateFitnesses(agents, passedIDs):
 		team_damage  = agent.getvar("team_damage") + 1;
 		other_team_damage = agent.getvar("other_team_damage") + 1;
 		
-		fitness[passedIDs[i]] = (damage_given / damage_taken) + (other_team_damage / team_damage);
+		fitness[passedIDs[i]] = (damage_given / damage_taken) + (other_team_damage / team_damage) - 2.0;
 		
 		i += 1;
 		
@@ -382,7 +432,7 @@ def evaluateFitnesses(agents, passedIDs):
 	
 	if minValue < 0:
 		fitness = [x + -minValue for x in fitness];
-
+		
 def breed(parentA, parentB, split = -1):
     # Given 2 inputs (parents), we need 4 (2 ^ 2) children with traits:
     # AB, AA, BA, BB
@@ -446,11 +496,11 @@ def roulette_select(population, fitnesses, num):
 	#And return the children
 	return new_children
 	
-def evolution():
+def evolution(epoch):
 
 	global population
 	global fitness
-	
+		
 	offspring = [];
 	
 	fitnessSum     = 0;
@@ -459,6 +509,13 @@ def evolution():
 	for i in range(0, len(fitness)):
 		print("\t[fitness] Agent %d: %f" % (i, fitness[i]));
 	
+	with open("%sfitnesses.txt" % resultFolder, "a+") as f:
+		f.write("[generation %d]\n" % (epoch-1));		
+		for i in range(0, len(fitness)):
+			f.write("agent_%d = %f\n" % (i, fitness[i]));
+			
+		f.write("\n");
+		
 	population = roulette_select(population, fitness, len(population));
 
 	#Run through each member in the population
@@ -474,7 +531,14 @@ def evolution():
 				choice = random.choice(actions);
 				print("\tGene #%d of agent #%d mutated: %s to %s" % (i, j, agent[i].__name__, choice.__name__));
 				population[j][i] = random.choice(actions);
-				
+	
+	with open("%sgenerations.txt" % resultFolder, "a+") as f:
+		f.write("[generation %d]\n" % epoch);		
+		for (i, agent) in enumerate(population):
+			f.write("agent_%d = %s\n" % (i, str([actions.index(x) for x in agent]).replace("[", "").replace("]", "") ));
+			
+		f.write("\n");
+			
 	#Print out the new population
 	print("\n\tNew population");
 	for (i, agent) in enumerate(population):
