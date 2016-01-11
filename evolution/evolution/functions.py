@@ -173,6 +173,7 @@ def agents_init(agents):
 			
 		#Situate randomly and increase teamid by 1
 		agent.randomxy();
+		agent.random_heading();
 		i += 1;
 
 
