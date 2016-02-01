@@ -57,12 +57,16 @@ if "--help" in sys.argv:
 
 extract_cmd_args();
 
+TEAM_SIZE             = int(args["team-size"]);
 AMOUNT_OF_AGENTS      = int(args["amount"]);
 NUMBER_OF_GENERATIONS = int(args["gens"]);
 MAX_TICKS             = int(args["max-ticks"]);
 SPLIT_POS             = int(args["split"]);
 MUTATION_CHANCE       = float(args["mutation"]);
-TEAM_SIZE             = int(args["team-size"]);
+
+if AMOUNT_OF_AGENTS % TEAM_SIZE != 0:
+	print("[error] Invalid amount of agents: " + AMOUNT_OF_AGENTS + " not divisible by " + TEAM_SIZE);
+	exit(1);
 
 population = [ ]; #index = agent id, data = actions
 fitness    = [ ];
