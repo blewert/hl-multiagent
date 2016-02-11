@@ -1,0 +1,9 @@
+# .gitignore
+# last updated on 11/02/2016:
+# 	- Removed temp python files and stuff.
+#
+
+*.pyc
+*.zip
+*.rar
+*.nlogo
