@@ -38,11 +38,13 @@ def extract_cmd_args():
 		print("[error] I expected > 1 arguments.");
 		exit(1);
 
+
+
 if "--help" in sys.argv:
 	print("[required flags]");
 	print("{");
 	
-	print("\t--islands [uint]\tThe amount of islands used.");
+	print("\t--islands [uint]\tThe number of islands to evolve on");
 	print("\t--amount [uint]\t\tThe population size");
 	print("\t--gens [uint]\t\tThe amount of generations to run for");
 	print("\t--max-ticks [uint]\tThe max number of epochs to run for each simulation");
@@ -56,7 +58,7 @@ if "--help" in sys.argv:
 
 extract_cmd_args();
 
-ISLAND_AMOUNT         = int(args["islands"]);
+AMOUNT_OF_ISLANDS     = int(args["islands"]);
 TEAM_SIZE             = int(args["team-size"]);
 AMOUNT_OF_AGENTS      = int(args["amount"]);
 NUMBER_OF_GENERATIONS = int(args["gens"]);
@@ -68,11 +70,11 @@ if AMOUNT_OF_AGENTS % TEAM_SIZE != 0:
 	print("[error] Invalid amount of agents: " + AMOUNT_OF_AGENTS + " not divisible by " + TEAM_SIZE);
 	exit(1);
 
-population = [];
-fitness    = [];
-
 island_populations = [];
 island_fitnesses   = [];
+
+population = [ ]; #index = agent id, data = actions
+fitness    = [ ];
 
 actions = [ 
 	e.attack, e.signal_and_attack, e.attack_signalled_agent,
@@ -87,67 +89,20 @@ attack_actions = [
 
 resultFolder = "";
 
-def migrate():
-	
-	global island_fitnesses, island_populations;
-	
-	# Run through every island.
-	# Find the highest fitness for this particular island.
-	# Find the neighbouring islands (left only, make left & right work)
-	# 	- Find the lowest fitness for this neighbour
-	#	- Replace genes for lowest fitness neighbour with highest fitnesses
-	
-	for island in range(0, ISLAND_AMOUNT):
-		# Run through each island.
-		
-		# Highest fitness for this island
-		max_value = max(island_fitnesses[island]);
-		max_index = island_fitnesses[island].index(max_value);
-		
-		print("\nthis island: " + str(island_fitnesses[island]));
-			
-		if island > 0:
-			# Has a left neighbour.
-			
-			# Lowest fitness for neighbour
-			min_value = min(island_fitnesses[island-1]);
-			min_index = island_fitnesses[island-1].index(min_value);
-			
-			print("left neighbour: " + str(island_fitnesses[island-1]));
-			print("island %d: lowest fitness %f at %d needs to be replaced with %f at %d." % (island, min_value, min_index, max_value, max_index));
-			
-			island_populations[island-1][min_index] = list(island_populations[island][max_index]);
-			island_fitnesses[island-1][min_index] = max_value;
-		
-		if island < ISLAND_AMOUNT - 1:
-			# Has a right neighbour.
-			
-			# Lowest fitness for neighbour
-			min_value = min(island_fitnesses[island+1]);
-			min_index = island_fitnesses[island+1].index(min_value);
-			
-			print("right neighbour: " + str(island_fitnesses[island+1]));
-			print("island %d: lowest fitness %f at %d needs to be replaced with %f at %d." % (island, min_value, min_index, max_value, max_index));
-			
-			island_populations[island+1][min_index] = list(island_populations[island][max_index]);
-			island_fitnesses[island+1][min_index] = max_value;
-		
-	pass;
-	
 def runSimulation(numberOfGenerations):
 
-	global population, island_fitnesses, island_populations, fitness;
+	for island in range(0, AMOUNT_OF_ISLANDS):
 	
-	# Run through each number of specified generations.
-	for i in range(0, numberOfGenerations):
+		# Load in population data for this island
+		population = island_populations[island];
 	
-		for island in range(0, ISLAND_AMOUNT):
-			
-			population = island_populations[island];
-			
-			print("Running generation [%d/%d] on island #%d" % (i+1, numberOfGenerations, island));
+		# Run through each number of specified generations.
+		for i in range(0, numberOfGenerations):
+		
+			print("Running generation [%d/%d]" % (i+1, numberOfGenerations));
 			print("{");
-						
+	
+			
 			# Then, run through every pair of agents in the population. Execute
 			# a simulation involving just these two agents.
 			for j in range(0, len(population), TEAM_SIZE):
@@ -159,16 +114,11 @@ def runSimulation(numberOfGenerations):
 			evolution(i+1);
 			
 			print("}\n");
-			
-			
-			# After each generation for each island.
-			island_populations[island] = list(population);
-			island_fitnesses[island] = list(fitness);
-			
-		# After each run of generations for each island. Migration needs to occur.
-		migrate();
-			
 
+		# Append the modified + evolved genes after evolution
+		island_populations.append(population);
+		island_fitnesses.append(fitness);
+	
 def makeDirectories():
 	global resultFolder
 
@@ -180,9 +130,6 @@ def makeDirectories():
 	idirs = [ int(x) for x in dirs if x.isdigit() ];
 	idirs.sort();
 
-	print(dirs);
-	print(len(idirs));
-	
 	if len(idirs) > 0:
 		resultFolder = ("results/%d/" % (idirs[-1] + 1));
 	else:
@@ -195,26 +142,22 @@ def init():
 	#Initialise the list of actions for each agent
 	#..
 	
-	global island_populations, island_fitnesses, fitness;
+	makeDirectories();
 	
-	#makeDirectories();
-	
-	#Run through the number of islands
-	for island in range(0, ISLAND_AMOUNT):
-	
-		island_value = [];
-		island_fitnesses.append([]);
+	# Run through every island
+	for island in range(0, AMOUNT_OF_ISLANDS):
+
+		local_pop = [];
 		
 		#Run through each agent in the population
 		for agent in range(0, AMOUNT_OF_AGENTS):
 		
 			#Set their actions to be random initially
 			randActions = [actions[random.randrange(0, len(actions))] for i in range(0, len(actions))];
-			island_value.append(randActions);
-		
-		fitness = [ 0 for x in range(0, AMOUNT_OF_AGENTS) ];
-		
-		island_populations.append(island_value);
+			local_pop.append(randActions);
+			fitness.append(0);
+			
+		island_populations.append(local_pop);
 		
 	with open("%sgenerations.txt" % resultFolder, "a+") as f:
 		f.write("[generation 0]\n");		
@@ -227,7 +170,7 @@ def init():
 	
 	#And run the simulation
 	runSimulation(NUMBER_OF_GENERATIONS);
-	
+
 def setupEnvironment(passedAgents):
 	#Set up an environment to simulate the agents
 	e.environment = Environment(600, 600);
@@ -458,7 +401,7 @@ def executeIndividualSimulation(passedAgents):
 
 	#passedAgents just contains the ids for agents in the agents array.
 	#..
-
+	
 	#Call to setup environment + agents
 	setupEnvironment(passedAgents);
 	
@@ -471,6 +414,8 @@ def executeIndividualSimulation(passedAgents):
 	
 	#Set up actions for every agent with the actions spawned for the population
 	for (i, agentID) in enumerate(passedAgents):
+		print("aa " + str(agentID));
+		print(population[0]);
 		e.agents.get(i).setvar("actions", population[agentID]);
 
 	# for agent in e.agents:
@@ -497,7 +442,6 @@ def evaluateFitnesses(agents, passedIDs):
 		#fitness[passedIDs[i]] = (agent.getvar("damage_given") + 1) / (agent.getvar("damage_taken") + 1) - 1;
 		#fitness[passedIDs[i]] = agent.getvar("other_team_damage");
 		#(given_damage / own_damage) + (other_team_damage / team_damage)
-
 		damage_given = agent.getvar("damage_given") + 1;
 		damage_taken = agent.getvar("damage_taken") + 1;
 		team_damage  = agent.getvar("team_damage") + 1;
@@ -509,7 +453,7 @@ def evaluateFitnesses(agents, passedIDs):
 		
 	#Normalize fitnesses (for negative values)
 	minValue = min(fitness);
-
+	
 	if minValue < 0:
 		fitness = [x + -minValue for x in fitness];
 		
@@ -533,10 +477,6 @@ def breed(parentA, parentB, split = -1):
     
 def roulette_select(population, fitnesses, num):
 
-	if fitnesses.count(fitnesses[0]) == len(fitnesses):
-		print("\tAll fitnesses were set to 0. Setting all elements to 0.00001 to force new population.");
-		fitnesses = [ 0.00001 for x in fitnesses ];
-	
     #Sum the individual fitnesses
 	total_fitness = float(sum(fitnesses));
     

@@ -25,6 +25,8 @@ class Environment:
 		self.tk     = tkinter.Tk();
 		self.canvas = tkinter.Canvas(self.tk, width=width, height=height);
 		
+		self.tk.geometry("+0+0");
+		
 		#Setup wrapping bool
 		self.wrap = wrap;
 		
