@@ -1,0 +1,44 @@
+[generation 0]
+
+[generation 1]
+
+[generation 0]
+
+[generation 0]
+
+[generation 1]
+
+[generation 0]
+
+[generation 0]
+
+[generation 1]
+
+[generation 1]
+agent_0 = 0, 2, 3, 0, 3, 1, 6, 4
+agent_1 = 0, 2, 3, 0, 3, 1, 6, 4
+agent_2 = 0, 2, 3, 0, 3, 1, 6, 4
+agent_3 = 0, 2, 3, 0, 3, 1, 6, 4
+
+[generation 1]
+agent_0 = 0, 0, 1, 2, 5, 1, 7, 5
+agent_1 = 0, 0, 1, 2, 5, 1, 7, 5
+agent_2 = 0, 0, 1, 2, 5, 1, 7, 5
+agent_3 = 0, 0, 1, 2, 5, 1, 7, 5
+
+[generation 1]
+agent_0 = 1, 7, 0, 5, 3, 1, 5, 4
+agent_1 = 1, 7, 0, 5, 3, 1, 5, 4
+agent_2 = 1, 7, 0, 5, 3, 1, 5, 4
+agent_3 = 1, 7, 0, 5, 3, 1, 5, 4
+
+[generation 1]
+
+[generation 2]
+
+[generation 2]
+agent_0 = 0, 2, 3, 0, 3, 1, 6, 4
+agent_1 = 0, 2, 3, 0, 3, 1, 6, 4
+agent_2 = 0, 2, 3, 0, 3, 1, 6, 4
+agent_3 = 0, 2, 3, 0, 3, 1, 6, 4
+

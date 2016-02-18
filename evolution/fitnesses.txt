@@ -1,0 +1,86 @@
+[generation 0]
+agent_0 = 0.000000
+agent_1 = 0.000000
+agent_2 = 0.000000
+agent_3 = 0.000000
+agent_4 = 0.000000
+agent_5 = 0.000000
+agent_6 = 0.000000
+agent_7 = 0.000000
+agent_8 = 0.000000
+agent_9 = 0.000000
+agent_10 = 0.000000
+agent_11 = 0.000000
+agent_12 = 0.000000
+agent_13 = 0.000000
+agent_14 = 0.000000
+agent_15 = 0.000000
+agent_16 = 0.000000
+agent_17 = 0.000000
+agent_18 = 0.000000
+agent_19 = 0.000000
+
+[generation 0]
+agent_0 = 0.000000
+agent_1 = 0.000000
+agent_2 = 0.000000
+agent_3 = 0.000000
+agent_4 = 0.000000
+agent_5 = 0.000000
+agent_6 = 0.000000
+agent_7 = 0.000000
+agent_8 = 0.000000
+agent_9 = 0.000000
+agent_10 = 0.000000
+agent_11 = 0.000000
+agent_12 = 0.000000
+agent_13 = 0.000000
+agent_14 = 0.000000
+agent_15 = 0.000000
+agent_16 = 0.000000
+agent_17 = 0.000000
+agent_18 = 0.000000
+agent_19 = 0.000000
+
+[generation 0]
+agent_0 = 0.000000
+agent_1 = 0.000000
+agent_2 = 0.000000
+agent_3 = 0.000000
+
+[generation 0]
+agent_0 = 1.960938
+agent_1 = 1.960938
+agent_2 = 0.000000
+agent_3 = 102.360938
+
+[generation 0]
+agent_0 = 0.000000
+agent_1 = 10.842857
+agent_2 = 0.000000
+agent_3 = 0.000000
+
+[generation 0]
+agent_0 = 0.000000
+agent_1 = 29.464865
+agent_2 = 0.000000
+agent_3 = 0.000000
+
+[generation 0]
+agent_0 = 0.000000
+agent_1 = 0.000000
+agent_2 = 0.000000
+agent_3 = 0.000000
+
+[generation 1]
+agent_0 = 0.000000
+agent_1 = 0.000000
+agent_2 = 0.000000
+agent_3 = 0.000000
+
+[generation 1]
+agent_0 = 21.451490
+agent_1 = 0.000000
+agent_2 = 0.000000
+agent_3 = 0.000000
+
