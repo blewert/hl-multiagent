@@ -7,3 +7,4 @@
 *.zip
 *.rar
 *.nlogo
+/evolution/results/*

@@ -48,6 +48,7 @@ if "--help" in sys.argv:
 	print("\t--max-ticks [uint]\tThe max number of epochs to run for each simulation");
 	print("\t--split [uint]\t\tThe two-fold split in each chromosome during crossover");
 	print("\t--mutation [uint]\tThe mutation chance (0 .. 1)");
+	print("\t--migration [float]\tThe migration chance (0 .. 1)");
 	print("\t--team-size [uint]\tThe team size");
 	
 	print("}");
@@ -63,6 +64,7 @@ NUMBER_OF_GENERATIONS = int(args["gens"]);
 MAX_TICKS             = int(args["max-ticks"]);
 SPLIT_POS             = int(args["split"]);
 MUTATION_CHANCE       = float(args["mutation"]);
+MIGRATION_CHANCE      = float(args["migration"]);
 
 if AMOUNT_OF_AGENTS % TEAM_SIZE != 0:
 	print("[error] Invalid amount of agents: " + AMOUNT_OF_AGENTS + " not divisible by " + TEAM_SIZE);
@@ -132,7 +134,6 @@ def migrate():
 			island_populations[island+1][min_index] = list(island_populations[island][max_index]);
 			island_fitnesses[island+1][min_index] = max_value;
 		
-	pass;
 	
 def runSimulation(numberOfGenerations):
 
@@ -166,7 +167,37 @@ def runSimulation(numberOfGenerations):
 			island_fitnesses[island] = list(fitness);
 			
 		# After each run of generations for each island. Migration needs to occur.
-		migrate();
+		rand_num = random.random();
+		
+		if rand_num < MIGRATION_CHANCE:
+			print("Coin flip produced %f < %f, so migration will occur." % (rand_num, MIGRATION_CHANCE));
+			migrate();
+		else:
+			print("Coin flip produced %f >= %f, so migration will NOT occur." % (rand_num, MIGRATION_CHANCE));
+			
+		epoch = i;
+		
+		with open("%sfitnesses.txt" % resultFolder, "a+") as f:
+			f.write("[generation %d]\n" % (epoch));		
+			
+			num = 0;
+			for fit in island_fitnesses:
+				for i in range(0, len(fit)):
+					f.write("agent_%d = %f\n" % (num, fit[i]));
+					num += 1;
+				
+			f.write("\n");
+			
+		with open("%sgenerations.txt" % resultFolder, "a+") as f:
+			f.write("[generation %d]\n" % epoch);		
+			
+			num = 0;
+			for pop in island_populations:
+				for (i, agent) in enumerate(pop):
+					f.write("agent_%d = %s\n" % (num, str([actions.index(x) for x in agent]).replace("[", "").replace("]", "") ));
+					num += 1;
+				
+			f.write("\n");
 			
 
 def makeDirectories():
@@ -197,7 +228,7 @@ def init():
 	
 	global island_populations, island_fitnesses, fitness;
 	
-	#makeDirectories();
+	makeDirectories();
 	
 	#Run through the number of islands
 	for island in range(0, ISLAND_AMOUNT):
@@ -216,12 +247,17 @@ def init():
 		
 		island_populations.append(island_value);
 		
-	with open("%sgenerations.txt" % resultFolder, "a+") as f:
-		f.write("[generation 0]\n");		
-		for (i, agent) in enumerate(population):
-			f.write("agent_%d = %s\n" % (i, str([actions.index(x) for x in agent]).replace("[", "").replace("]", "") ));
+	#with open("%sgenerations.txt" % resultFolder, "a+") as f:
+	#		f.write("[generation 0]\n");		
+	#		
+	#		num = 0;
+	#		for pop in island_populations:
+	#			for (i, agent) in enumerate(pop):
+	#				f.write("agent_%d = %s\n" % (num, str([actions.index(x) for x in agent]).replace("[", "").replace("]", "") ));
+	#				num += 1;
+	#			
+	#		f.write("\n");
 			
-		f.write("\n");
 		
 	print("Running simulation with %d agents for %d generations..." % (AMOUNT_OF_AGENTS, NUMBER_OF_GENERATIONS));
 	
@@ -593,12 +629,12 @@ def evolution(epoch):
 	for i in range(0, len(fitness)):
 		print("\t[fitness] Agent %d: %f" % (i, fitness[i]));
 	
-	with open("%sfitnesses.txt" % resultFolder, "a+") as f:
-		f.write("[generation %d]\n" % (epoch-1));		
-		for i in range(0, len(fitness)):
-			f.write("agent_%d = %f\n" % (i, fitness[i]));
-			
-		f.write("\n");
+	#with open("%sfitnesses.txt" % resultFolder, "a+") as f:
+	#	f.write("[generation %d]\n" % (epoch-1));		
+	#	for i in range(0, len(fitness)):
+	#		f.write("agent_%d = %f\n" % (i, fitness[i]));
+	#		
+	#	f.write("\n");
 		
 	population = roulette_select(population, fitness, len(population));
 
@@ -616,12 +652,12 @@ def evolution(epoch):
 				print("\tGene #%d of agent #%d mutated: %s to %s" % (i, j, agent[i].__name__, choice.__name__));
 				population[j][i] = random.choice(actions);
 	
-	with open("%sgenerations.txt" % resultFolder, "a+") as f:
-		f.write("[generation %d]\n" % epoch);		
-		for (i, agent) in enumerate(population):
-			f.write("agent_%d = %s\n" % (i, str([actions.index(x) for x in agent]).replace("[", "").replace("]", "") ));
-			
-		f.write("\n");
+	#with open("%sgenerations.txt" % resultFolder, "a+") as f:
+	#	f.write("[generation %d]\n" % epoch);		
+	#	for (i, agent) in enumerate(population):
+	#		f.write("agent_%d = %s\n" % (i, str([actions.index(x) for x in agent]).replace("[", "").replace("]", "") ));
+	#		
+	#	f.write("\n");
 			
 	#Print out the new population
 	print("\n\tNew population");
