@@ -77,10 +77,10 @@ island_populations = [];
 island_fitnesses   = [];
 
 actions = [ 
-	e.attack, e.signal_and_attack, e.attack_signalled_agent,
 	e.flee, e.signal_and_flee, e.flee_to_base,
 	e.move_to_last_position, 
-	e.wander 
+	e.wander,
+	e.attack, e.signal_and_attack, e.attack_signalled_agent
 ];
 
 attack_actions = [
@@ -668,7 +668,7 @@ def evolution(epoch):
 def play_attack(num, agent):
 	#acts = agent.getvar("attacks");
 	#acts[num](agent);
-	play_action(num, agent);
+	play_action(num + 5, agent);
 	
 def play_action(num, agent):
 	#0,      1        2           3     4      5       6       7
