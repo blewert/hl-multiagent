@@ -530,7 +530,6 @@ def evaluateFitnesses(agents, passedIDs):
 		
 	for agent in agents:
 		
-		#fitness[passedIDs[i]] = (agent.getvar("damage_given") + 1) / (agent.getvar("damage_taken") + 1) - 1;
 		#fitness[passedIDs[i]] = agent.getvar("other_team_damage");
 		#(given_damage / own_damage) + (other_team_damage / team_damage)
 
@@ -539,7 +538,8 @@ def evaluateFitnesses(agents, passedIDs):
 		team_damage  = agent.getvar("team_damage") + 1;
 		other_team_damage = agent.getvar("other_team_damage") + 1;
 		
-		fitness[passedIDs[i]] = (damage_given / damage_taken) + (other_team_damage / team_damage) - 2.0;
+		fitness[passedIDs[i]] = damage_given / damage_taken; #(agent.getvar("damage_given") + 1) / (agent.getvar("damage_taken") + 1) - 1;
+		#fitness[passedIDs[i]] = (damage_given / damage_taken) + (other_team_damage / team_damage) - 2.0;
 		
 		i += 1;
 		
